@@ -70,7 +70,7 @@ def download_link():
                 print(row[3])
                 print(count)
                 count += 1
-                download_file(row[3])
+                # download_file(row[3])
             except Exception as e:
                 print(f"Error processing row: {row}, Error: {e}")
                 continue

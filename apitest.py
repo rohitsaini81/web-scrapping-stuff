@@ -67,13 +67,13 @@ def extractdata(html_content):
         newvideourl = extractvideo(video)
         print(newvideourl)
 
-        # create_video(title, image, video, tags, description, keywords)
+        # create_video(title, image, newvideourl, tags, title, keywords)
         time.sleep(1)
         print("-" * 40)
 
 
-def set_links():
-    print("hello why")
+def set_links(i=3):
+    print("Reading Database...")
     maindata = read_videos()
     count = 0
     if maindata is None:
@@ -81,17 +81,12 @@ def set_links():
     else:
         for row in maindata:
             try:
-                link = row[3]
                 print(count)
-                response = requests.get(link)
-                if response.status_code == 200:
-                    html_content = response.text
-                    uri = extractvideo(html_content)
-                    # download_file(uri)
-                    print(uri)
-                    print("-" * 40)
-                    time.sleep(1)
-                    count += 1
+                print(" -" * 40)
+                time.sleep(1)
+                count += 1
+                link = row[i]
+                print(link)
                 # download_file(row[2])
             except Exception as e:
                 print(f"Error processing row: {row}, Error: {e}")
@@ -109,8 +104,9 @@ def scrape():
 
 
 def main():
-    print("Starting...")
-    scrape()
+    print("Setting...")
+    # scrape()
+    set_links()
 
 
 if __name__ == "__main__":
