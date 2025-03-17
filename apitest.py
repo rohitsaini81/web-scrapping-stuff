@@ -61,45 +61,44 @@ def extractdata(html_content):
         keywords = ["porn"]
         print(image)
 
-        create_video(title, image, video, tags, description, keywords)
+        # create_video(title, image, video, tags, description, keywords)
         time.sleep(1)
         print("-" * 40)
 
 
-#response = requests.get(url)
-#if response.status_code == 200:
-    #html_content = response.text
-    #print(extractdata(html_content))
-    #extractdata(html_content)
-#else:
+# response = requests.get(url)
+# if response.status_code == 200:
+    # html_content = response.text
+    # print(extractdata(html_content))
+    # extractdata(html_content)
+# else:
 #    print( f"Failed to retrieve the webpage. Status code: {response.status_code}")
 
 
+def set_links():
+    maindata = read_videos()
+    count = 0
+    if maindata is None:
+        print("Error: No data to process.")
+    else:
+        for row in maindata:
+            try:
+                link = row[3]
+                print(count)
+                response = requests.get(link)
+                if response.status_code == 200:
+                    html_content = response.text
+                    uri = extractvideo(html_content)
+                    # download_file(uri)
+                    print(uri)
+                    print("-" * 40)
+                    time.sleep(1)
+                    count += 1
+                # download_file(row[2])
+            except Exception as e:
+                print(f"Error processing row: {row}, Error: {e}")
+                continue
 
 
-maindata = read_videos()
-count = 0
-
-if maindata is None:
-    print("Error: No data to process.")
-else:
-    for row in maindata:
-        try:
-            link = row[3]
-            print(count)
-            response = requests.get(link)
-            if response.status_code == 200:
-                html_content = response.text
-                uri = extractvideo(html_content)
-                #download_file(uri)
-                print(uri)
-                print("-" * 40)
-                time.sleep(1)
-                count += 1
-            #download_file(row[2])
-        except Exception as e:
-            print(f"Error processing row: {row}, Error: {e}")
-            continue
-
-
-
+def main():
+    print("Starting...")

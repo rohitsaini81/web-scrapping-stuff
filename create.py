@@ -3,7 +3,8 @@ import psycopg2
 hostname = 'localhost'       # Host where the PostgreSQL server is running
 port = '5432'                # Default PostgreSQL port
 database = 'mydatabase'      # The database name you want to connect to
-username = 'rohitsaini'          # Your PostgreSQL username
+# username = 'rohitsaini'          # Your PostgreSQL username
+username = 'rohit'          # Your PostgreSQL username
 password = 'mypassword'      # Your PostgreSQL password
 
 
@@ -227,9 +228,9 @@ def update_url(old_img_url, new_img_url, image=True):
                         print("Update successful!")
                         isUpdated = True
                     else:
-                        print("No rows updated. (Maybe the old_img_url was not found?)")
+                        print(
+                            "No rows updated. (Maybe the old_img_url was not found?)")
                         return False
-
 
             connection.commit()
 
@@ -257,30 +258,12 @@ def delete_video(video_id):
             connection.close()
 
 
-# Example usage of CRUD functions
-if __name__ == "__main__":
-    # Create a new video
-    create_video(
-        title="How to Learn Python",
-        img_url="https://example.com/python_img.jpg",
-        video_url="https://example.com/python_video.mp4",
-        tags="Python, Programming, Tutorial",
-        description="This is a tutorial video on how to learn Python programming for beginners.",
-        keywords="Python, programming, tutorial"
-    )
-
-    # Read all videos
-    print("\nAll Videos:")
-    # read_videos()
-
-    # Update a video (assuming video with ID 1 exists)
-    # print("\nUpdating Video with ID 1:")
-    # update_video(1, title="Updated Python Tutorial")
-
-    # Delete a video (assuming video with ID 1 exists)
-    # print("\nDeleting Video with ID 1:")
-    # delete_video(1)
-
-    # Read all videos again to see the changes
-    # print("\nAll Videos After Update and Delete:")
-    # read_videos()
+# if __name__ == "__main__":
+#     create_video(
+#         title="How to Learn Python",
+#         img_url="https://example.com/python_img.jpg",
+#         video_url="https://example.com/python_video.mp4",
+#         tags="Python, Programming, Tutorial",
+#         description="This is a tutorial video on how to learn Python programming for beginners.",
+#         keywords="Python, programming, tutorial"
+#     )
