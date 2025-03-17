@@ -23,7 +23,7 @@ def get_unique_filename(url, folder="../public/downloads"):
     return os.path.join(folder, unique_filename)
 
 
-def download_file(url, isImage=False):
+def download_file(url, isImage):
     """Downloads a file and saves it with a unique name"""
     filename = get_unique_filename(url)
     parsed_url = urlparse(url)

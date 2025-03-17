@@ -72,7 +72,7 @@ def extractdata(html_content):
         print("-" * 40)
 
 
-def set_links(i=3):
+def set_links(i=2):
     print("Reading Database...")
     maindata = read_videos()
     count = 0
@@ -81,13 +81,16 @@ def set_links(i=3):
     else:
         for row in maindata:
             try:
+                isImage = True
                 print(count)
                 print(" -" * 40)
                 time.sleep(1)
                 count += 1
                 link = row[i]
                 print(link)
-                # download_file(row[2])
+                if i == 3:
+                    isImage = False
+                download_file(row[i], isImage)
             except Exception as e:
                 print(f"Error processing row: {row}, Error: {e}")
                 continue
@@ -106,7 +109,7 @@ def scrape():
 def main():
     print("Setting...")
     # scrape()
-    set_links()
+    # set_links(2)
 
 
 if __name__ == "__main__":

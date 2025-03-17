@@ -205,7 +205,7 @@ def update_video(video_id, title=None, img_url=None, video_url=None, tags=None, 
             connection.close()
 
 
-def update_url(old_img_url, new_img_url, image=True):
+def update_url(old_img_url, new_img_url, image):
     connection = create_connection()
     isUpdated = False
     if connection:
