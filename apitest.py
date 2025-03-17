@@ -18,7 +18,10 @@ url2 = 'https://hotxv.com/video-7ekhw7kkn1v/she-fucked-her-bestie-s-boyfriend-af
 # print(response.json())
 
 
-def extractvideo(html_content):
+def extractvideo(vid_url):
+    response = requests.get(vid_url)
+    if response.status_code == 200:
+        html_content = response.text
     soup = BeautifulSoup(html_content, "html.parser")
     for div in soup.find_all("video"):
         source_tag = div.find("source")
@@ -29,7 +32,7 @@ def extractvideo(html_content):
 
 
 def extractdata(html_content):
-
+    print("Extracting...")
     soup = BeautifulSoup(html_content, "html.parser")
     videos = []
 
@@ -59,23 +62,18 @@ def extractdata(html_content):
         tags = ["porn"]
         description = "test"
         keywords = ["porn"]
-        print(image)
+        print(video)
+        print("Extracting from Preview page...")
+        newvideourl = extractvideo(video)
+        print(newvideourl)
 
         # create_video(title, image, video, tags, description, keywords)
         time.sleep(1)
         print("-" * 40)
 
 
-# response = requests.get(url)
-# if response.status_code == 200:
-    # html_content = response.text
-    # print(extractdata(html_content))
-    # extractdata(html_content)
-# else:
-#    print( f"Failed to retrieve the webpage. Status code: {response.status_code}")
-
-
 def set_links():
+    print("hello why")
     maindata = read_videos()
     count = 0
     if maindata is None:
@@ -100,5 +98,20 @@ def set_links():
                 continue
 
 
+def scrape():
+    response = requests.get(url)
+    if response.status_code == 200:
+        html_content = response.text
+        extractdata(html_content)
+    else:
+        print(
+            f"Failed to retrieve the webpage. Status code: {response.status_code}")
+
+
 def main():
     print("Starting...")
+    scrape()
+
+
+if __name__ == "__main__":
+    main()

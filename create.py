@@ -258,7 +258,6 @@ def delete_video(video_id):
             connection.close()
 
 
-# if __name__ == "__main__":
 #     create_video(
 #         title="How to Learn Python",
 #         img_url="https://example.com/python_img.jpg",

@@ -23,14 +23,14 @@ def get_unique_filename(url, folder="../public/downloads"):
     return os.path.join(folder, unique_filename)
 
 
-def download_file(url):
+def download_file(url, isImage=False):
     """Downloads a file and saves it with a unique name"""
     filename = get_unique_filename(url)
     parsed_url = urlparse(url)
     if not parsed_url.scheme:  # No 'http' or 'https' in URL
         print(f"Invalid URL: {url}")
         return
-    if update_url(url, filename, False):
+    if update_url(url, filename, isImage):
         response = requests.get(url, stream=True)
         if response.status_code == 200:
             with open(filename, "wb") as file:
@@ -56,18 +56,21 @@ urls = [
 # for url in urls:
 # download_file(url)
 
-maindata = read_videos()
-count = 0
 
-if maindata is None:
-    print("Error: No data to process.")
-else:
-    for row in maindata:
-        try:
-            print(row[3])
-            print(count)
-            count += 1
-            download_file(row[3])
-        except Exception as e:
-            print(f"Error processing row: {row}, Error: {e}")
-            continue
+def download_link():
+
+    maindata = read_videos()
+    count = 0
+
+    if maindata is None:
+        print("Error: No data to process.")
+    else:
+        for row in maindata:
+            try:
+                print(row[3])
+                print(count)
+                count += 1
+                download_file(row[3])
+            except Exception as e:
+                print(f"Error processing row: {row}, Error: {e}")
+                continue
