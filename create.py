@@ -3,8 +3,8 @@ import psycopg2
 hostname = 'localhost'       # Host where the PostgreSQL server is running
 port = '5432'                # Default PostgreSQL port
 database = 'mydatabase'      # The database name you want to connect to
-# username = 'rohitsaini'          # Your PostgreSQL username
-username = 'rohit'          # Your PostgreSQL username
+username = 'rohitsaini'          # Your PostgreSQL username
+#username = 'rohit'          # Your PostgreSQL username
 password = 'mypassword'      # Your PostgreSQL password
 
 

@@ -67,7 +67,7 @@ def extractdata(html_content):
         newvideourl = extractvideo(video)
         print(newvideourl)
 
-        # create_video(title, image, newvideourl, tags, title, keywords)
+        create_video(title, image, newvideourl, tags, title, keywords)
         time.sleep(1)
         print("-" * 40)
 
@@ -107,9 +107,12 @@ def scrape():
 
 
 def main():
-    print("Setting...")
-    # scrape()
-    # set_links(2)
+    print("Starting...")
+    scrape()
+    print("Setting Images")
+    set_links(2)
+    print("Setting Vidoes")
+    set_links(3)
 
 
 if __name__ == "__main__":
