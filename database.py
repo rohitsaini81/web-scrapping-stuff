@@ -1,0 +1,34 @@
+import psycopg2
+
+# Define connection parameters
+hostname = 'localhost'       # Host where the PostgreSQL server is running
+port = '5432'                # Default PostgreSQL port
+database = 'mydatabase'      # The database name you want to connect to
+username = 'rohit'          # Your PostgreSQL username
+password = 'mypassword'      # Your PostgreSQL password
+
+# Establish the connection
+try:
+    connection = psycopg2.connect(
+        host=hostname,
+        port=port,
+        dbname=database,
+        user=username,
+        password=password
+    )
+
+    # Create a cursor object using a context manager
+    with connection.cursor() as cursor:
+        # Print PostgreSQL version
+        cursor.execute("SELECT version();")
+        db_version = cursor.fetchone()
+        print("PostgreSQL version:", db_version)
+
+except Exception as error:
+    print(f"Error: {error}")
+
+finally:
+    # Close the connection if it's open
+    if connection:
+        connection.close()
+        print("Connection closed.")
