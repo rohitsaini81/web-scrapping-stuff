@@ -111,7 +111,7 @@ def main():
     scrape()
     print("Setting Images")
     set_links(2)
-    print("Setting Vidoes")
+    print("Setting Videos")
     set_links(3)
 
 
