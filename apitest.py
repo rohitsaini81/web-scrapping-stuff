@@ -2,11 +2,11 @@ import time
 from create import *
 from download import *
 import requests
-from flask import Flask, request, jsonify
+# from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
 # url = "http://127.0.0.1:5000/search"
 url = 'https://hotxv.com'
-url2 = 'https://hotxv.com/video-7ekhw7kkn1v/she-fucked-her-bestie-s-boyfriend-after-party-and-don-t-regret-about-it.html'
+# url2 = 'https://hotxv.com/video-7ekhw7kkn1v/she-fucked-her-bestie-s-boyfriend-after-party-and-don-t-regret-about-it.html'
 
 # data = {
 #     "title": "Python",
@@ -43,7 +43,7 @@ def extractdata(html_content):
         span_tag = div.find("span")
         anchor_tag = div.find("a")
 
-        if title_tag and img_tag or span_tag and anchor_tag:
+        if title_tag and img_tag and span_tag and anchor_tag:
             title = title_tag.text.strip()
             duration = span_tag.text.strip().split(":", 1)
 
