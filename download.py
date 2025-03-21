@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from create import *
 
 
-def get_unique_filename(url, folder="../public/downloads"):
+def get_unique_filename(url, folder="./downloads"):
     """Generates a unique filename based on URL"""
     parsed_url = urlparse(url)
     filename = os.path.basename(parsed_url.path)
@@ -30,6 +30,7 @@ def download_file(url, isImage):
     if not parsed_url.scheme:  # No 'http' or 'https' in URL
         print(f"Invalid URL: {url}")
         return
+    print("url: "+url)
     if update_url(url, filename, isImage):
         response = requests.get(url, stream=True)
         if response.status_code == 200:
