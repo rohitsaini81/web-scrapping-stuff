@@ -4,24 +4,13 @@ from download import *
 import requests
 # from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
-# url = "http://127.0.0.1:5000/search"
 url = 'https://hotxv.com'
 # url2 = 'https://hotxv.com/video-7ekhw7kkn1v/she-fucked-her-bestie-s-boyfriend-after-party-and-don-t-regret-about-it.html'
 
-# data = {
-#     "title": "Python",
-#     "tags": "programming",
-#     "keywords": "tutorial"
-# }
 
-# response = requests.post(url, json=data)
-# print(response.json())
+def extract_video(vid_url):
 
-
-def extractvideo(vid_url):
-    response = requests.get(vid_url)
-    if response.status_code == 200:
-        html_content = response.text
+    html_content = scrape(vid_url)
     soup = BeautifulSoup(html_content, "html.parser")
     for div in soup.find_all("video"):
         source_tag = div.find("source")
@@ -31,7 +20,8 @@ def extractvideo(vid_url):
             return "not found or error "
 
 
-def extractdata(html_content):
+def extract_data():
+    html_content = scrape()
     print("Extracting...")
     soup = BeautifulSoup(html_content, "html.parser")
     videos = []
@@ -46,7 +36,6 @@ def extractdata(html_content):
         if title_tag and img_tag and span_tag and anchor_tag:
             title = title_tag.text.strip()
             duration = span_tag.text.strip().split(":", 1)
-
             img_url = img_tag["src"]
             video_url = anchor_tag["href"]
             videos.append(
@@ -54,22 +43,37 @@ def extractdata(html_content):
 
     # Print extracted data
     for video in videos:
-        # print(f"Title: {video['title']}")
-        # print(f"Duration: {video['Duration']}")
+
         title = f"{video['title']}"
         image = f"https://www.hotxv.com{video['image']}"
-        video = f"https://www.hotxv.com{video['video']}"
-        tags = ["porn"]
-        description = "test"
-        keywords = ["porn"]
-        print(video)
+        
         print("Extracting from Preview page...")
-        newvideourl = extractvideo(video)
-        print(newvideourl)
-
-        create_video(title, image, newvideourl, tags, title, keywords)
-        time.sleep(1)
+        video_url = f"https://www.hotxv.com{video['video']}"
+        new_video_url = extract_video(video_url)
         print("-" * 40)
+        
+        tags = ["porn"]
+        
+        description = "test"
+        
+        category = ["porn"]
+        
+        duration = f"{video['Duration']}"
+
+        
+        print("title", title)
+        print("image", image)
+        print("video", new_video_url)
+        print("tags", tags)
+        print("description", description)
+        print("category", category)
+        print("duration", duration)
+        print("-" * 40)
+        # print("Creating Video...")
+        create_video(title, image, new_video_url, tags, description, category, duration)
+        print("Done")
+        print("-" * 40)
+        time.sleep(4)
 
 
 def set_links(i):
@@ -97,11 +101,12 @@ def set_links(i):
                 continue
 
 
-def scrape():
-    response = requests.get(url)
+def scrape(url_to_scrape=url):
+    response = requests.get(url_to_scrape)
     if response.status_code == 200:
         html_content = response.text
-        extractdata(html_content)
+        return html_content
+        # extractdata(html_content)
     else:
         print(
             f"Failed to retrieve the webpage. Status code: {response.status_code}")
@@ -109,11 +114,11 @@ def scrape():
 
 def main():
     print("Starting...")
-    scrape()
-    print("Setting Images")
-    set_links(7)
-    print("Setting Videos")
-    set_links(8)
+    extract_data()
+    # print("Setting Images")
+    # set_links(7)
+    # print("Setting Videos")
+    # set_links(8)
 
 
 if __name__ == "__main__":

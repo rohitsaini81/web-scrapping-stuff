@@ -30,17 +30,17 @@ def create_connection():
 # Create (Insert data into the table)
 
 
-def create_video(title, img_url, video_url, tags, description, keywords):
+def create_video(title, img_url, video_url, tags, description, category, duration):
     connection = create_connection()
     if connection:
         try:
             with connection.cursor() as cursor:
                 insert_query = '''
-                    INSERT INTO videos (title, img_url, video_url, tags, description, keywords)
-                    VALUES (%s, %s, %s, %s, %s, %s);
+                    INSERT INTO videos (title, img_url, video_url, tags, description, category, duration)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s);
                 '''
                 cursor.execute(insert_query, (title, img_url,
-                               video_url, tags, description, keywords))
+                               video_url, tags, description, category, duration))
                 connection.commit()
                 print(f"Video '{title}' inserted successfully.")
         except Exception as error:
