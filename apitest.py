@@ -51,8 +51,11 @@ def extract_data():
         video_url = f"https://www.hotxv.com{video['video']}"
         new_video_url = extract_video(video_url)
         
-        # final_img_url =   download_file(image, True)
-        # final_video_url=  download_file(new_video_url, False)
+        final_img_url = downloads(image, True)
+        image = final_img_url 
+               
+        final_video_url=  download_file(new_video_url, False)
+        new_video_url = final_video_url
         print("-" * 40)
         
         tags = ["porn"]
@@ -64,20 +67,23 @@ def extract_data():
         duration = f"{video['Duration']}"
 
         
-        print("title", title)
-        print("image", image)
-        print("video", new_video_url)
-        print("tags", tags)
-        print("description", description)
-        print("category", category)
-        print("duration", duration)
+
         if title is None or image is None or new_video_url is None or tags is None or description is None or category is None or duration is None:
             print("Error: Missing data")
+            print("title", title)
+            print("image", image)
+            print("video", new_video_url)
+            print("tags", tags)
+            print("description", description)
+            print("category", category)
+            print("duration", duration)
+            print("-" * 40)
+            
         else:
-            print("Creating Video...")
-        print("-" * 40)
-        create_video(title, image, new_video_url, tags, description, category, duration)
-        time.sleep(4)
+            print("Creating data...")
+            print("-" * 40)
+            create_video(title, image, new_video_url, tags, description, category, duration)
+            time.sleep(1)
 
 
 def set_links(i):
@@ -97,7 +103,7 @@ def set_links(i):
                 link = row[i]
                 print("link : "+link)
             
-                if i == 8:
+                if i == 7:
                     isImage = False
                 download_file(link, isImage)
             except Exception as e:
@@ -118,11 +124,11 @@ def scrape(url_to_scrape=url):
 
 def main():
     print("Starting...")
-    # extract_data()
-    # print("Setting Images")
-    set_links(7)
+    extract_data()
+    print("Setting Images")
+    # set_links(6)
     # print("Setting Videos")
-    # set_links(8)
+    # set_links(7)
 
 
 if __name__ == "__main__":
