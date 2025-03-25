@@ -50,6 +50,9 @@ def extract_data():
         print("Extracting from Preview page...")
         video_url = f"https://www.hotxv.com{video['video']}"
         new_video_url = extract_video(video_url)
+        
+        # final_img_url =   download_file(image, True)
+        # final_video_url=  download_file(new_video_url, False)
         print("-" * 40)
         
         tags = ["porn"]
@@ -68,11 +71,12 @@ def extract_data():
         print("description", description)
         print("category", category)
         print("duration", duration)
+        if title is None or image is None or new_video_url is None or tags is None or description is None or category is None or duration is None:
+            print("Error: Missing data")
+        else:
+            print("Creating Video...")
         print("-" * 40)
-        # print("Creating Video...")
         create_video(title, image, new_video_url, tags, description, category, duration)
-        print("Done")
-        print("-" * 40)
         time.sleep(4)
 
 
@@ -114,9 +118,9 @@ def scrape(url_to_scrape=url):
 
 def main():
     print("Starting...")
-    extract_data()
+    # extract_data()
     # print("Setting Images")
-    # set_links(7)
+    set_links(7)
     # print("Setting Videos")
     # set_links(8)
 
