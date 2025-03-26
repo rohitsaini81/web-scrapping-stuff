@@ -54,7 +54,7 @@ def extract_data():
         final_img_url = downloads(image, True)
         image = final_img_url 
 
-        final_video_url=  download_file(new_video_url, False)
+        final_video_url=  downloads(new_video_url, False)
         new_video_url = final_video_url
         print("-" * 40)
         
