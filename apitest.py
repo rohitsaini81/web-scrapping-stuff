@@ -4,20 +4,49 @@ from download import *
 import requests
 # from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
-url = 'https://hotxv.com'
-# url2 = 'https://hotxv.com/video-7ekhw7kkn1v/she-fucked-her-bestie-s-boyfriend-after-party-and-don-t-regret-about-it.html'
 
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+url = 'https://hotxv.com'
+url2 = 'https://hotxv.com/video-7ekhw7kkn1v/she-fucked-her-bestie-s-boyfriend-after-party-and-don-t-regret-about-it.html'
+
+url_list = [
+    url+"/new/2",
+    url+"/new/3",
+    url+"/new/4",
+    url+"/new/5",
+    url+"/new/6",
+    url+"/new/7",
+    url+"/new/8",
+    url+"/new/9",
+    url+"/new/10",
+]
+print(url_list)
 
 def extract_video(vid_url):
-
+    video = ""
+    keywords = []
     html_content = scrape(vid_url)
     soup = BeautifulSoup(html_content, "html.parser")
     for div in soup.find_all("video"):
         source_tag = div.find("source")
         if source_tag:
-            return source_tag["src"]
+            video = source_tag["src"]
         else:
             return "not found or error "
+    keywords.append(video)
+    
+    
+    for div in soup.find_all("p"):
+        anchor_tags = div.find_all("a") # it's actually a anchor tag containing a keyword
+        # keywords.append(div.text.strip())
+        for anchor_tag in anchor_tags:
+            if anchor_tag and anchor_tag.text.strip():
+                keywords.append(anchor_tag.text.strip())
+    return keywords    
+
+
 
 
 def extract_data():
@@ -49,16 +78,16 @@ def extract_data():
         
         print("Extracting from Preview page...")
         video_url = f"https://www.hotxv.com{video['video']}"
-        new_video_url = extract_video(video_url)
+        video_data = extract_video(video_url)
         
         final_img_url = downloads(image, True)
         image = final_img_url 
 
-        final_video_url=  downloads(new_video_url, False)
-        new_video_url = final_video_url
+        video_url =  downloads(video_data[0], False)
         print("-" * 40)
         
-        tags = ["porn"]
+        tags = video_data[1:]
+        # print("Tags: ", tags)
         
         description = "test"
         
@@ -68,11 +97,11 @@ def extract_data():
 
         
 
-        if title is None or image is None or new_video_url is None or tags is None or description is None or category is None or duration is None:
+        if title is None or image is None or video_url is None or tags is None or description is None or category is None or duration is None:
             print("Error: Missing data")
             print("title", title)
             print("image", image)
-            print("video", new_video_url)
+            print("video", video_url)
             print("tags", tags)
             print("description", description)
             print("category", category)
@@ -82,7 +111,7 @@ def extract_data():
         else:
             print("Creating data...")
             print("-" * 40)
-            create_video(title, image, new_video_url, tags, description, category, duration)
+            create_video(title, image, video_url, tags, description, category, duration)
             time.sleep(1)
 
 
@@ -112,7 +141,9 @@ def set_links(i):
 
 
 def scrape(url_to_scrape=url):
-    response = requests.get(url_to_scrape)
+    response = requests.get(url_to_scrape, verify=False)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"}
     if response.status_code == 200:
         html_content = response.text
         return html_content
@@ -123,12 +154,9 @@ def scrape(url_to_scrape=url):
 
 
 def main():
-    print("Starting...")
+    print("Starting...")    
     extract_data()
-    print("Setting Images")
-    # set_links(6)
-    # print("Setting Videos")
-    # set_links(7)
+
 
 
 if __name__ == "__main__":

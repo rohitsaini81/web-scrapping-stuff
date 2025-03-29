@@ -42,7 +42,7 @@ def create_video(title, img_url, video_url, tags, description, category, duratio
                 cursor.execute(insert_query, (title, img_url,
                                video_url, tags, description, category, duration))
                 connection.commit()
-                print(f"Video '{title}' inserted successfully.")
+                print(f"Video inserted successfully.")
         except Exception as error:
             print(f"Error: {error}")
         finally:
@@ -84,7 +84,7 @@ def find_video(video_id=None, title=None, tags=None, keywords=None):
 
             # Join conditions with OR
             query = "SELECT * FROM videos WHERE " + " OR ".join(conditions)
-            print("Generated Query:", query, params)
+            # print("Generated Query:", query, params)
 
             # Execute Query
             cursor.execute(query, params)

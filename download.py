@@ -20,7 +20,6 @@ def get_unique_filename(url, folder="downloads"):
     """Generates a unique filename based on URL"""
     parsed_url = urlparse(url)
     filename = os.path.basename(parsed_url.path)
-    print(filename)
 
     # Ensure the directory exists
     os.makedirs(folder, exist_ok=True)
@@ -53,13 +52,12 @@ def download_file(url, isImage, max_retries=3):
                 
                 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
 
-                response = requests.get(url, headers=headers, stream=True)
+                response = requests.get(url, headers=headers, stream=True , timeout=10, verify=False)
 
                 if response.status_code == 200:
                     with open(filename, "wb") as file:
                         for chunk in response.iter_content(1024):
                             file.write(chunk)
-                    print(f"Downloaded: {filename}")
                     # After download:
                     if is_file_valid(filename):
                         print(f"Successfully downloaded: {filename}")
@@ -97,7 +95,8 @@ def downloads(url, isImage, max_retries=3, timeout=10):
         print(f"Invalid URL: {url}")
         return False
     
-    print(f"Downloading: {url} -> {filename}")
+    
+    # print(f"Downloading: {url} -> {filename}")
 
     # Request headers to avoid blocking
     headers = {
@@ -106,7 +105,7 @@ def downloads(url, isImage, max_retries=3, timeout=10):
     
     for attempt in range(1, max_retries + 1):
         try:
-            response = requests.get(url, headers=headers, stream=True, timeout=timeout)
+            response = requests.get(url, headers=headers, stream=True, timeout=timeout, verify=False)
 
             if response.status_code == 200:
                 with open(filename, "wb") as file:
