@@ -20,9 +20,9 @@ url_list = [
     url+"/new/7",
     url+"/new/8",
     url+"/new/9",
-    url+"/new/10",
+    # url+"/new/1000",
 ]
-print(url_list)
+# print(url_list)
 
 def extract_video(vid_url):
     video = ""
