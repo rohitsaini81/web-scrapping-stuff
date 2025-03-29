@@ -79,7 +79,9 @@ def extract_data():
         print("Extracting from Preview page...")
         video_url = f"https://www.hotxv.com{video['video']}"
         video_data = extract_video(video_url)
-        
+        if len(video_data[0]) < 8:
+            print(video_data[0])
+            continue
         final_img_url = downloads(image, True)
         image = final_img_url 
 
@@ -97,7 +99,7 @@ def extract_data():
 
         
 
-        if title is None or image is None or video_url is None or tags is None or description is None or category is None or duration is None:
+        if title is None or image is None or video_url is None or len(video_url)<10 or tags is None or description is None or category is None or duration is None:
             print("Error: Missing data")
             print("title", title)
             print("image", image)
