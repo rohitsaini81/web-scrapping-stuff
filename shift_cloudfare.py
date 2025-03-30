@@ -38,3 +38,21 @@ file_key = "Kooha-2025-03-14-22-46-43.mp4"  # Replace with your actual file key
 
 # thats simple read from videos and then shifts to videos
 # move_file(source_bucket, destination_bucket, file_key)
+
+# List all files in the source bucket
+from create import read_videos
+
+def list_files_in_bucket():
+    data = read_videos()
+    for video in data:
+        video_id = video[0]
+        video_url = video[1]
+        img_url = video[2]
+        print(f"Video ID: {video_id}, Video URL: {video_url}, Image URL: {img_url}")
+        move_file(source_bucket, destination_bucket, video_url)
+
+    
+
+
+
+list_files_in_bucket()
