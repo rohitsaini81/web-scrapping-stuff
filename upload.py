@@ -33,6 +33,6 @@ def upload_file(file_path):
         print(f"❌ Upload error: {e}")
 
 # Example Usage
-file_path = 'public/debug.png'  # Replace with your file path
+file_path = 'https://videos.pexels.com/video-files/3196174/3196174-uhd_2560_1440_25fps.mp4'  # Replace with your file path
 
 upload_file(file_path)

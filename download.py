@@ -115,6 +115,7 @@ def downloads(url, isImage, max_retries=3, timeout=10):
                 # Check file size to ensure it's not empty
                 if os.path.exists(filename) and os.path.getsize(filename) > 0:
                     print(f"✅ Successfully downloaded: {filename}")
+                # uploading to cloudflare
                     return filename  # Success
                 else:
                     print(f"⚠️ Empty file detected: {filename}")

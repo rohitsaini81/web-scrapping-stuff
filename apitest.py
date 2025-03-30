@@ -1,6 +1,7 @@
 import time
 from create import *
 from download import *
+from upload2 import *
 import requests
 # from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
@@ -84,10 +85,21 @@ def extract_data():
             continue
         final_img_url = downloads(image, True)
         image = final_img_url 
-
-        video_url =  downloads(video_data[0], False)
-        print("-" * 40)
         
+        
+        print("Downloading video...")
+        file_url = video_data[0]
+        save_path = f"/tmp/{urlparse(file_url).path.rsplit('/', 1)[-1]}"  # Save location
+        print(save_path)
+        downloaded_file = download_file_temp(file_url, save_path)
+        if downloaded_file:
+            video_url = upload_file(downloaded_file)
+            print(f"✅ File uploaded successfully: {video_url}")
+            
+        # continue
+        # video_url =  downloads(video_data[0], False)
+        print("-" * 40)
+        # continue
         tags = video_data[1:]
         # print("Tags: ", tags)
         
