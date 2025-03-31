@@ -45,10 +45,10 @@ from create import read_videos
 def list_files_in_bucket():
     data = read_videos()
     for video in data:
-        video_id = video[0]
-        video_url = video[1]
-        img_url = video[2]
-        print(f"Video ID: {video_id}, Video URL: {video_url}, Image URL: {img_url}")
+        video_url = video[7]
+        #print(video)
+        #print(video_url)
+        #continue
         move_file(source_bucket, destination_bucket, video_url)
 
     

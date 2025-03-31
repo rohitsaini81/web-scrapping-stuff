@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-url = 'https://hotxv.com'
+url = 'https://hotxv.com/new/'
 url2 = 'https://hotxv.com/video-7ekhw7kkn1v/she-fucked-her-bestie-s-boyfriend-after-party-and-don-t-regret-about-it.html'
 
 url_list = [
@@ -50,8 +50,8 @@ def extract_video(vid_url):
 
 
 
-def extract_data():
-    html_content = scrape()
+def extract_data(my_url_i):
+    html_content = scrape(my_url_i)
     print("Extracting...")
     soup = BeautifulSoup(html_content, "html.parser")
     videos = []
@@ -70,7 +70,7 @@ def extract_data():
             video_url = anchor_tag["href"]
             videos.append(
                 {"title": title, "Duration": duration[1], "image": img_url, "video": video_url})
-
+    count =0
     # Print extracted data
     for video in videos:
 
@@ -83,6 +83,8 @@ def extract_data():
         if len(video_data[0]) < 8:
             print(video_data[0])
             continue
+        print(count)
+        continue
         final_img_url = downloads(image, True)
         image = final_img_url 
         
@@ -125,7 +127,7 @@ def extract_data():
         else:
             print("Creating data...")
             print("-" * 40)
-            create_video(title, image, video_url, tags, description, category, duration)
+            #create_video(title, image, video_url, tags, description, category, duration)
             time.sleep(1)
 
 
@@ -169,7 +171,10 @@ def scrape(url_to_scrape=url):
 
 def main():
     print("Starting...")    
-    extract_data()
+    
+    #extract_data()
+    for i in range(11,15):
+        extract_data(url+str(i))
 
 
 

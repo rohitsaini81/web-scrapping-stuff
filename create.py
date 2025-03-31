@@ -3,8 +3,8 @@ import psycopg2
 hostname = 'localhost'       # Host where the PostgreSQL server is running
 port = '5432'                # Default PostgreSQL port
 database = 'mydatabase'      # The database name you want to connect to
-# username = 'rohitsaini'          # Your PostgreSQL username
-username = 'rohit'          # Your PostgreSQL username
+username = 'rohitsaini'          # Your PostgreSQL username
+#username = 'rohit'          # Your PostgreSQL username
 password = 'mypassword'      # Your PostgreSQL password
 
 
@@ -36,7 +36,7 @@ def create_video(title, img_url, video_url, tags, description, category, duratio
         try:
             with connection.cursor() as cursor:
                 insert_query = '''
-                    INSERT INTO videos (title, img_url, video_url, tags, description, category, duration)
+                    INSERT INTO videos2 (title, img_url, video_url, tags, description, category, duration)
                     VALUES (%s, %s, %s, %s, %s, %s, %s);
                 '''
                 cursor.execute(insert_query, (title, img_url,
@@ -113,7 +113,7 @@ def read_videos():
     if connection:
         try:
             with connection.cursor() as cursor:
-                cursor.execute("SELECT * FROM videos;")
+                cursor.execute("SELECT * FROM videos2;")
                 data = cursor.fetchall()
                 if data:
                     return data
