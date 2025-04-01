@@ -1,4 +1,6 @@
 import psycopg2
+from Logger import logger
+
 # Define connection parameters
 hostname = 'localhost'       # Host where the PostgreSQL server is running
 port = '5432'                # Default PostgreSQL port
@@ -24,7 +26,7 @@ def create_connection():
         )
         return connection
     except Exception as error:
-        print(f"Error: {error}")
+        logger.info(f"Error: {error}")
         return None
 
 # Create (Insert data into the table)
@@ -42,9 +44,9 @@ def create_video(title, img_url, video_url, tags, description, category, duratio
                 cursor.execute(insert_query, (title, img_url,
                                video_url, tags, description, category, duration))
                 connection.commit()
-                print(f"Video inserted successfully.")
+                logger.info(f"Video inserted successfully.")
         except Exception as error:
-            print(f"Error: {error}")
+            logger.info(f"Error: {error}")
         finally:
             connection.close()
 
@@ -84,7 +86,7 @@ def find_video(video_id=None, title=None, tags=None, keywords=None):
 
             # Join conditions with OR
             query = "SELECT * FROM videos WHERE " + " OR ".join(conditions)
-            # print("Generated Query:", query, params)
+            # logger.info("Generated Query:", query, params)
 
             # Execute Query
             cursor.execute(query, params)
@@ -93,15 +95,15 @@ def find_video(video_id=None, title=None, tags=None, keywords=None):
             # Process Results
             if data:
                 for row in data:
-                    print(
+                    logger.info(
                         f"ID: {row[0]}, Title: {row[1]}, Video URL: {row[3]}")
                 return data
             else:
-                print("No videos found.")
+                logger.info("No videos found.")
                 return None
 
     except Exception as error:
-        print(f"Error: {error}")
+        logger.info(f"Error: {error}")
         return None
     finally:
         connection.close()  # Ensure connection is closed
@@ -118,12 +120,12 @@ def read_videos():
                 if data:
                     return data
                     for row in data:
-                        print(
+                        logger.info(
                             f"ID: {row[0]}, Title: {row[1]}, Video URL: {row[3]}")
                 else:
-                    print("No videos found.")
+                    logger.info("No videos found.")
         except Exception as error:
-            print(f"Error: {error}")
+            logger.info(f"Error: {error}")
         finally:
             connection.close()
 
@@ -150,12 +152,12 @@ def find_one(video_id=0):
                         "keywords": data[6]
                     }
                     for row in data:
-                        print(
+                        logger.info(
                             f"ID: {row[0]}, Title: {row[1]}, Video URL: {row[3]}")
                 else:
-                    print("No videos found.")
+                    logger.info("No videos found.")
         except Exception as error:
-            print(f"Error: {error}")
+            logger.info(f"Error: {error}")
         finally:
             connection.close()
 
@@ -198,9 +200,9 @@ def update_video(video_id, title=None, img_url=None, video_url=None, tags=None, 
                 cursor.execute(update_query, tuple(params))
                 connection.commit()
 
-                print(f"Video with ID {video_id} updated successfully.")
+                logger.info(f"Video with ID {video_id} updated successfully.")
         except Exception as error:
-            print(f"Error: {error}")
+            logger.info(f"Error: {error}")
         finally:
             connection.close()
 
@@ -215,27 +217,27 @@ def update_url(old_img_url, new_img_url, image):
                     update_query = "UPDATE videos SET img_url = %s WHERE img_url = %s;"
                     cursor.execute(update_query, (new_img_url, old_img_url))
                     if cursor.rowcount > 0:
-                        print("Update successful!")
+                        logger.info("Update successful!")
                         isUpdated = True
                     else:
-                        print(
+                        logger.info(
                             "No rows updated. (Maybe the old_img_url was not found?)")
                         return False
                 else:
                     update_query = "UPDATE videos SET video_url = %s WHERE video_url= %s;"
                     cursor.execute(update_query, (new_img_url, old_img_url))
                     if cursor.rowcount > 0:
-                        print("Update successful!")
+                        logger.info("Update successful!")
                         isUpdated = True
                     else:
-                        print(
+                        logger.info(
                             "No rows updated. (Maybe the old_img_url was not found?)")
                         return False
 
             connection.commit()
 
         except Exception as error:
-            print(f"Error: {error}")
+            logger.info(f"Error: {error}")
         finally:
             connection.close()
             return isUpdated
@@ -251,9 +253,9 @@ def delete_video(video_id):
                 delete_query = "DELETE FROM videos WHERE id = %s;"
                 cursor.execute(delete_query, (video_id,))
                 connection.commit()
-                print(f"Video with ID {video_id} deleted successfully.")
+                logger.info(f"Video with ID {video_id} deleted successfully.")
         except Exception as error:
-            print(f"Error: {error}")
+            logger.info(f"Error: {error}")
         finally:
             connection.close()
 
@@ -266,4 +268,4 @@ def delete_video(video_id):
 #         description="This is a tutorial video on how to learn Python programming for beginners.",
 #         keywords="Python, programming, tutorial"
 #     )
-#print(read_videos())
+#logger.info(read_videos())

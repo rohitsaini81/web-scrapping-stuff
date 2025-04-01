@@ -2,7 +2,7 @@ import boto3
 import os
 import requests
 from dotenv import load_dotenv
-
+from Logger import logger
 # Load environment variables
 load_dotenv()
 
@@ -24,10 +24,10 @@ def download_file_temp(url, save_path):
             for chunk in response.iter_content(chunk_size=8192):
                 file.write(chunk)
         
-        print(f"✅ File downloaded: {save_path}")
+        logger.info(f"✅ File downloaded: {save_path}")
         return save_path
     except Exception as e:
-        print(f"❌ Download error: {e}")
+        logger.info(f"❌ Download error: {e}")
         return None
 
 def upload_file(file_path):
@@ -41,15 +41,15 @@ def upload_file(file_path):
 
         # Generate Public URL
         file_url = f"https://https://pub-a919e0e7442047299d7072ac1b2ab5d0.r2.dev/{file_name}"
-        # print(f"📌 File URL: {file_url}")
+        # logger.info(f"📌 File URL: {file_url}")
 
         # Delete file after upload
         os.remove(file_path)
-        print(f"🗑️ File deleted: {file_path}")
+        logger.info(f"🗑️ File deleted: {file_path}")
 
         return file_name
     except Exception as e:
-        print(f"❌ Upload error: {e}")
+        logger.info(f"❌ Upload error: {e}")
 
 # Example Usage
 # file_url = 'https://videos.pexels.com/video-files/3196174/3196174-uhd_2560_1440_25fps.mp4'  

@@ -1,6 +1,7 @@
 import boto3
 import os
 from dotenv import load_dotenv
+from Logger import logger
 
 # Load environment variables
 load_dotenv()
@@ -19,14 +20,14 @@ def move_file(source_bucket, destination_bucket, file_key):
         # Copy the file to the destination bucket
         copy_source = {'Bucket': source_bucket, 'Key': file_key}
         s3_client.copy_object(CopySource=copy_source, Bucket=destination_bucket, Key=file_key)
-        print(f"✅ File copied to {destination_bucket}/{file_key}")
+        logger.info(f"✅ File copied to {destination_bucket}/{file_key}")
 
         # Delete the file from the source bucket
         s3_client.delete_object(Bucket=source_bucket, Key=file_key)
-        print(f"🗑️ File deleted from {source_bucket}/{file_key}")
+        logger.info(f"🗑️ File deleted from {source_bucket}/{file_key}")
 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        logger.info(f"❌ Error: {e}")
 
 # Example usage
 source_bucket = "stream"
@@ -46,8 +47,8 @@ def list_files_in_bucket():
     data = read_videos()
     for video in data:
         video_url = video[7]
-        #print(video)
-        #print(video_url)
+        #logger.info(video)
+        #logger.info(video_url)
         #continue
         move_file(source_bucket, destination_bucket, video_url)
 

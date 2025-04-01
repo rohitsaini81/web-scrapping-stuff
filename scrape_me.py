@@ -6,25 +6,17 @@ from upload2 import *
 import requests
 # from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
-
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+from Logger import logger
 
+url = 'https://hotxv.com'
 url = 'https://hotxv.com/new/'
+
 url2 = 'https://hotxv.com/video-7ekhw7kkn1v/she-fucked-her-bestie-s-boyfriend-after-party-and-don-t-regret-about-it.html'
 
-url_list = [
-    url+"/new/2",
-    url+"/new/3",
-    url+"/new/4",
-    url+"/new/5",
-    url+"/new/6",
-    url+"/new/7",
-    url+"/new/8",
-    url+"/new/9",
-    # url+"/new/1000",
-]
-# print(url_list)
+
+# logger.info(url_list)
 
 def extract_video(vid_url):
     video = ""
@@ -53,10 +45,9 @@ def extract_video(vid_url):
 
 def extract_data(my_url_i):
     html_content = scrape(my_url_i)
-    print("Extracting...")
+    logger.info("Extracting...")
     soup = BeautifulSoup(html_content, "html.parser")
     videos = []
-    print("Extracting from Preview page...")
 
     # Find all video containers
     for div in soup.find_all("div", class_="w3-third w3-container w3-margin-bottom"):
@@ -72,40 +63,41 @@ def extract_data(my_url_i):
             video_url = anchor_tag["href"]
             videos.append(
                 {"title": title, "Duration": duration[1], "image": img_url, "video": video_url})
-    count =0
+    count = 0
     # Print extracted data
     for video in videos:
 
         title = f"{video['title']}"
         image = f"https://www.hotxv.com{video['image']}"
         
-        print("Extracting from Preview page...")
+        logger.info("Extracting from Preview page...")
         video_url = f"https://www.hotxv.com{video['video']}"
         video_data = extract_video(video_url)
         if len(video_data[0]) < 8:
-            print("No... - "+video_data[0])
+            lgging.warning("No... - "+video_data[0])
             continue
-        print("item : "+count)
+        logger.info("item : "+str(count))
+        count += 1
         # continue
         final_img_url = downloads(image, True)
         image = final_img_url 
         
         
-        print("Downloading video...")
+        logger.info("Downloading video...")
         file_url = video_data[0]
         # save_path = f"/tmp/{urlparse(file_url).path.rsplit('/', 1)[-1]}"  # Save location
-        # print(save_path)
+        # logger.info(save_path)
         # downloaded_file = download_file_temp(file_url, save_path)
         # if downloaded_file:
         #     video_url = upload_file(downloaded_file)
-        #     print(f"✅ File uploaded successfully: {video_url}")
+        #     logger.info(f"✅ File uploaded successfully: {video_url}")
             
         # continue
-        # video_url =  downloads(file_url, False)
-        print("-" * 40)
+        video_url =  downloads(file_url, False)
+        logger.info("-" * 40)
         # continue
         tags = video_data[1:]
-        # print("Tags: ", tags)
+        # logger.info("Tags: ", tags)
         
         description = "test"
         
@@ -116,46 +108,46 @@ def extract_data(my_url_i):
         
 
         if title is None or image is None or video_url is None or len(video_url)<10 or tags is None or description is None or category is None or duration is None:
-            print("Error: Missing data")
-            print("title", title)
-            print("image", image)
-            print("video", video_url)
-            print("tags", tags)
-            print("description", description)
-            print("category", category)
-            print("duration", duration)
-            print("-" * 40)
+            logger.info("Error: Missing data")
+            logger.info("title", title)
+            logger.info("image", image)
+            logger.info("video", video_url)
+            logger.info("tags", tags)
+            logger.info("description", description)
+            logger.info("category", category)
+            logger.info("duration", duration)
+            logger.info("-" * 40)
             
         else:
-            print("Creating data...")
-            print("-" * 40)
-            insert_document(title, image, file_url, tags, description, category, duration)
+            logger.info("Creating data...")
+            logger.info("-" * 40)
+            insert_document(title, image, video_url, tags, description, category, duration)
             #create_video(title, image, video_url, tags, description, category, duration)
             time.sleep(1)
 
 
 def set_links(i):
-    print("Reading Database...")
+    logger.info("Reading Database...")
     maindata = read_videos()
     count = 0
     if maindata is None:
-        print("Error: No data to process.")
+        logger.info("Error: No data to process.")
     else:
         for row in maindata:
             try:
                 isImage = True
-                print(count)
-                print(" -" * 40)
+                logger.info(count)
+                logger.info(" -" * 40)
                 time.sleep(1)
                 count += 1
                 link = row[i]
-                print("link : "+link)
+                logger.info("link : "+link)
             
                 if i == 7:
                     isImage = False
                 download_file(link, isImage)
             except Exception as e:
-                print(f"Error processing row: {row}, Error: {e}")
+                logger.info(f"Error processing row: {row}, Error: {e}")
                 continue
 
 
@@ -168,16 +160,19 @@ def scrape(url_to_scrape=url):
         return html_content
         # extractdata(html_content)
     else:
-        print(
+        logger.info(
             f"Failed to retrieve the webpage. Status code: {response.status_code}")
 
 
 def main():
-    print("Starting...")    
+    logger.info("Starting...")    
     
-    extract_data(url+"new/2")
-    # for i in range(11,15):
-        # extract_data(url+str(i))
+    # extract_data(url)
+    for i in range(16,17):
+        logger.info("Page Scrapped: "+str(i-1))
+        time.sleep(1*60)
+        logger.info("Scraping page... : "+str(i))
+        extract_data(url+str(i))
 
 
 

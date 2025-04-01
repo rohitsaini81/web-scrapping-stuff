@@ -1,6 +1,7 @@
 import boto3
 import os
 from dotenv import load_dotenv
+from Logger import logger
 
 # Load environment variables
 load_dotenv()
@@ -26,11 +27,11 @@ def upload_file(file_path):
 
         # Generate Public URL
         file_url = f"https://{bucket_name}.{os.getenv('R2_ENDPOINT').replace('https://', '')}/{file_name}"
-        print(f"✅ File uploaded successfully: {file_name}")
-        print(f"📌 File URL: {file_url}")
+        logger.info(f"✅ File uploaded successfully: {file_name}")
+        logger.info(f"📌 File URL: {file_url}")
         return file_url
     except Exception as e:
-        print(f"❌ Upload error: {e}")
+        logger.info(f"❌ Upload error: {e}")
 
 # Example Usage
 file_path = 'https://videos.pexels.com/video-files/3196174/3196174-uhd_2560_1440_25fps.mp4'  # Replace with your file path

@@ -1,4 +1,5 @@
 import psycopg2
+from Logger import logger
 
 # Define connection parameters
 hostname = 'localhost'       # Host where the PostgreSQL server is running
@@ -22,13 +23,13 @@ try:
         # Print PostgreSQL version
         cursor.execute("SELECT version();")
         db_version = cursor.fetchone()
-        print("PostgreSQL version:", db_version)
+        logger.info("PostgreSQL version:", db_version)
 
 except Exception as error:
-    print(f"Error: {error}")
+    logger.info(f"Error: {error}")
 
 finally:
     # Close the connection if it's open
     if connection:
         connection.close()
-        print("Connection closed.")
+        logger.info("Connection closed.")

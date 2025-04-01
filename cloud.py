@@ -1,6 +1,7 @@
 
 import boto3
 from botocore.client import Config
+from Logger import logger
 
 # Replace with your actual credentials and bucket details
 ACCESS_KEY = "87e10a56324c3eb98427d14d6de6b90a"
@@ -26,10 +27,10 @@ def upload_video(file_path, bucket_name, object_name=None):
     try:
         with open(file_path, "rb") as file:
             s3.upload_fileobj(file, bucket_name, object_name)
-        print(f"Upload successful: {object_name} → {bucket_name}")
-        print(f"Access URL: {ENDPOINT_URL}/{bucket_name}/{object_name}")
+        logger.info(f"Upload successful: {object_name} → {bucket_name}")
+        logger.info(f"Access URL: {ENDPOINT_URL}/{bucket_name}/{object_name}")
     except Exception as e:
-        print("Error uploading file:", e)
+        logger.info("Error uploading file:", e)
 
 # Upload the video
 upload_video(VIDEO_FILE_PATH, BUCKET_NAME)

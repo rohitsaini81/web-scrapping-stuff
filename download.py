@@ -4,6 +4,7 @@ import requests
 from urllib.parse import urlparse
 from create import *
 import time
+from Logger import logger
 
 
 
@@ -41,10 +42,10 @@ def download_file(url, isImage, max_retries=3):
     filename = get_unique_filename(url)
     parsed_url = urlparse(url)
     if not parsed_url.scheme:
-        print(f"Invalid URL: {url}")
+        logger.info(f"Invalid URL: {url}")
         return
 
-    print("url: " + url)
+    logger.info("url: " + url)
     
     if update_url(url, filename, isImage):
         for attempt in range(max_retries):
@@ -60,23 +61,23 @@ def download_file(url, isImage, max_retries=3):
                             file.write(chunk)
                     # After download:
                     if is_file_valid(filename):
-                        print(f"Successfully downloaded: {filename}")
+                        logger.info(f"Successfully downloaded: {filename}")
                     else:
-                        print(f"Download failed or file is corrupt: {filename}")
+                        logger.info(f"Download failed or file is corrupt: {filename}")
 
 
                     return  # Exit function on success
                 else:
-                    print(f"Failed to download ({response.status_code}): {url}")
+                    logger.info(f"Failed to download ({response.status_code}): {url}")
             except requests.exceptions.RequestException as e:
-                print(f"Error downloading {url}: {e}")
+                logger.info(f"Error downloading {url}: {e}")
             
-            print(f"Retrying ({attempt + 1}/{max_retries})...")
+            logger.info(f"Retrying ({attempt + 1}/{max_retries})...")
             time.sleep(2)  # Wait before retrying
 
-        print(f"Failed after {max_retries} attempts: {url}")
+        logger.info(f"Failed after {max_retries} attempts: {url}")
     else:
-        print("No update required.")
+        logger.info("No update required.")
 
 
 
@@ -92,11 +93,11 @@ def downloads(url, isImage, max_retries=3, timeout=10):
     # Validate URL
     parsed_url = urlparse(url)
     if not parsed_url.scheme:
-        print(f"Invalid URL: {url}")
+        logger.info(f"Invalid URL: {url}")
         return False
     
     
-    # print(f"Downloading: {url} -> {filename}")
+    logger.info(f"Downloading: {url} -> {filename}")
 
     # Request headers to avoid blocking
     headers = {
@@ -114,22 +115,22 @@ def downloads(url, isImage, max_retries=3, timeout=10):
 
                 # Check file size to ensure it's not empty
                 if os.path.exists(filename) and os.path.getsize(filename) > 0:
-                    print(f"✅ Successfully downloaded: {filename}")
+                    logger.info(f"✅ Successfully downloaded: {filename}")
                 # uploading to cloudflare
                     return filename  # Success
                 else:
-                    print(f"⚠️ Empty file detected: {filename}")
+                    logger.info(f"⚠️ Empty file detected: {filename}")
                     os.remove(filename)  # Delete 0-byte file
             
             else:
-                print(f"❌ Failed (Status: {response.status_code}): {url}")
+                logger.info(f"❌ Failed (Status: {response.status_code}): {url}")
 
         except requests.exceptions.RequestException as e:
-            print(f"⚠️ Attempt {attempt}/{max_retries} failed: {e}")
+            logger.info(f"⚠️ Attempt {attempt}/{max_retries} failed: {e}")
         
         time.sleep(2)  # Wait before retrying
 
-    print(f"❌ All retries failed for: {url}")
+    logger.info(f"❌ All retries failed for: {url}")
     return False  # Failed after retries
   
 
@@ -154,14 +155,14 @@ def download_link():
     count = 0
 
     if maindata is None:
-        print("Error: No data to process.")
+        logger.info("Error: No data to process.")
     else:
         for row in maindata:
             try:
-                print(row[3])
-                print(count)
+                logger.info(row[3])
+                logger.info(count)
                 count += 1
                 # download_file(row[3])
             except Exception as e:
-                print(f"Error processing row: {row}, Error: {e}")
+                logger.info(f"Error processing row: {row}, Error: {e}")
                 continue
