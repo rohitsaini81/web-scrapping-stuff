@@ -1,5 +1,6 @@
 import time
-from create import *
+# from create import *
+from create_mongo import insert_document
 from download import *
 from upload2 import *
 import requests
@@ -55,6 +56,7 @@ def extract_data(my_url_i):
     print("Extracting...")
     soup = BeautifulSoup(html_content, "html.parser")
     videos = []
+    print("Extracting from Preview page...")
 
     # Find all video containers
     for div in soup.find_all("div", class_="w3-third w3-container w3-margin-bottom"):
@@ -81,25 +83,25 @@ def extract_data(my_url_i):
         video_url = f"https://www.hotxv.com{video['video']}"
         video_data = extract_video(video_url)
         if len(video_data[0]) < 8:
-            print(video_data[0])
+            print("No... - "+video_data[0])
             continue
-        print(count)
-        continue
+        print("item : "+count)
+        # continue
         final_img_url = downloads(image, True)
         image = final_img_url 
         
         
         print("Downloading video...")
         file_url = video_data[0]
-        save_path = f"/tmp/{urlparse(file_url).path.rsplit('/', 1)[-1]}"  # Save location
-        print(save_path)
-        downloaded_file = download_file_temp(file_url, save_path)
-        if downloaded_file:
-            video_url = upload_file(downloaded_file)
-            print(f"✅ File uploaded successfully: {video_url}")
+        # save_path = f"/tmp/{urlparse(file_url).path.rsplit('/', 1)[-1]}"  # Save location
+        # print(save_path)
+        # downloaded_file = download_file_temp(file_url, save_path)
+        # if downloaded_file:
+        #     video_url = upload_file(downloaded_file)
+        #     print(f"✅ File uploaded successfully: {video_url}")
             
         # continue
-        # video_url =  downloads(video_data[0], False)
+        # video_url =  downloads(file_url, False)
         print("-" * 40)
         # continue
         tags = video_data[1:]
@@ -127,6 +129,7 @@ def extract_data(my_url_i):
         else:
             print("Creating data...")
             print("-" * 40)
+            insert_document(title, image, file_url, tags, description, category, duration)
             #create_video(title, image, video_url, tags, description, category, duration)
             time.sleep(1)
 
@@ -172,9 +175,9 @@ def scrape(url_to_scrape=url):
 def main():
     print("Starting...")    
     
-    #extract_data()
-    for i in range(11,15):
-        extract_data(url+str(i))
+    extract_data(url+"new/2")
+    # for i in range(11,15):
+        # extract_data(url+str(i))
 
 
 

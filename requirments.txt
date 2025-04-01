@@ -1,0 +1,6 @@
+pymongo
+python-dotenv
+psycopg2
+boto3
+requests
+bs4
