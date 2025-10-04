@@ -80,7 +80,9 @@ def extract_data(my_url_i):
         count += 1
         # continue
         final_img_url = downloads(image, True)
-        image = final_img_url 
+        image = final_img_url
+        if len(image)<3:
+            continue
         
         
         logger.info("Downloading video...")
@@ -121,8 +123,8 @@ def extract_data(my_url_i):
         else:
             logger.info("Creating data...")
             logger.info("-" * 40)
-            insert_document(title, image, video_url, tags, description, category, duration)
-            #create_video(title, image, video_url, tags, description, category, duration)
+            #insert_document(title, image, video_url, tags, description, category, duration)
+            create_video(title, image, video_url, tags, description, category, duration)
             time.sleep(1)
 
 

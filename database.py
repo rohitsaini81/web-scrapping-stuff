@@ -10,13 +10,14 @@ password = 'mypassword'      # Your PostgreSQL password
 
 # Establish the connection
 try:
-    connection = psycopg2.connect(
+    connedatabase.pyction = psycopg2.connect(
         host=hostname,
         port=port,
         dbname=database,
         user=username,
         password=password
     )
+
 
     # Create a cursor object using a context manager
     with connection.cursor() as cursor:
