@@ -11,6 +11,6 @@ __pycache__
 *.tmp
 *.log
 *.out
-
+.env
 downloads/
 data/
