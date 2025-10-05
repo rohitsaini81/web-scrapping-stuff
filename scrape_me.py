@@ -1,6 +1,6 @@
 import time
-# from create import *
-from create_mongo import insert_document
+from create import *
+# from create_mongo import insert_document
 from download import *
 from upload2 import *
 import requests
@@ -170,7 +170,7 @@ def main():
     logger.info("Starting...")    
     
     # extract_data(url)
-    for i in range(16,17):
+    for i in range(3,4):
         logger.info("Page Scrapped: "+str(i-1))
         time.sleep(1*60)
         logger.info("Scraping page... : "+str(i))

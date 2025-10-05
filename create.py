@@ -5,8 +5,8 @@ from Logger import logger
 hostname = 'localhost'       # Host where the PostgreSQL server is running
 port = '5432'                # Default PostgreSQL port
 database = 'mydatabase'      # The database name you want to connect to
-username = 'rohitsaini'          # Your PostgreSQL username
-#username = 'rohit'          # Your PostgreSQL username
+#sername = 'rohitsaini'          # Your PostgreSQL username
+username = 'rohit'          # Your PostgreSQL username
 password = 'mypassword'      # Your PostgreSQL password
 
 
