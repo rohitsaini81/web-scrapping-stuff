@@ -32,6 +32,39 @@ def upload_video(file_path, bucket_name, object_name=None):
     except Exception as e:
         logger.info("Error uploading file:", e)
 
+
+
+
+def delete_video(file_name, bucket_name):
+
+    paginator = s3.get_paginator('list_objects_v2')
+    deleted_count = 0
+    
+    for page in paginator.paginate(Bucket=bucket_name):
+        if 'Contents' not in page:
+            print("Bucket is already empty.")
+            return
+
+        objects_to_delete = [{'Key': obj['Key']} for obj in page['Contents']]
+
+
+        #print(page.key)
+        response = s3.delete_objects(
+            Bucket=bucket_name,
+            Delete={'Objects': objects_to_delete}
+        )
+
+        deleted = len(response.get('Deleted', []))
+        deleted_count += deleted
+        print(f"Deleted {deleted} objects from bucket...")
+
+    print(f"✅ Finished — total deleted: {deleted_count}")
+    return "ok"
+
+
+
+
+delete_video("a", "videos")
 # Upload the video
-upload_video(VIDEO_FILE_PATH, BUCKET_NAME)
+# upload_video(VIDEO_FILE_PATH, BUCKET_NAME)
 
