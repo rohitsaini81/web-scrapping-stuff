@@ -8,11 +8,15 @@ from create import create_connection
 
 
 
+import json
 
-
-def filter_it_list(url):
+def filter_it_list(url, isJson=False):
 
     html_content = scrape(url)
+    if isJson:
+        parsed = json.loads(html_content)
+        html_content =parsed["content"]
+
     soup = BeautifulSoup(html_content, "html.parser")
     divs = soup.find_all("div", class_=["col", "col-12"])
     
@@ -57,18 +61,24 @@ def filter_it_list(url):
                 tags = tags.get_text(strip=True)
             else:
                 tags = str(tags)
-
             
+            print(title)
 
+#----------------------------------------------------------------------------->
+            blog_content = filter_it_preview(a_tag.get("href"))
+#----------------------------------------------------------------------------->
+
+#----------------------------------------------------------------------------->
+
+            # INSERTING INTO DATABASE 
+#----------------------------------------------------------------------------->
+
+                
             # create_db
             db_response = create_blog(title, thumbnail_url, description, tags)
-            print(db_response["id"])
-
-            # init post
-            blog_content = filter_it_preview(a_tag.get("href"))
-            print("blog_content")
-            db_response = create_blog_post(db_response["id"],title,blog_content, 20)
-            print(db_response)
+            db_response1 = create_blog_post(db_response["id"],title,blog_content, 20)
+            print(f"blog id : {db_response["id"]}")
+            print(f"post id : {db_response1["id"]}")
 
 
 
@@ -165,14 +175,15 @@ def create_blog(title, thumbnail_url, short_description, tags):
 
 
 
-uri = "https://www.ionos.com/digitalguide/"
-# uri = "https://www.ionos.com/digitalguide/websites/website-creation/the-best-website-builders/"
-# uri = "https://www.ionos.com/digitalguide/items.json?tx_guides_loadarticleslist[action]=list&tx_guides_loadarticleslist[contentUid]=0&tx_guides_loadarticleslist[controller]=LoadArticles&tx_guides_loadarticleslist[currentPageUid]=1&tx_guides_loadarticleslist[firstResult]=20&tx_guides_loadarticleslist[hideArticles]=&tx_guides_loadarticleslist[hideTopArticles]=1&tx_guides_loadarticleslist[layout]=0&tx_guides_loadarticleslist[maxResults]=10&tx_guides_loadarticleslist[stickyArticles]=&cHash=e57aef3f251abea1fd8ee9e9f54b8773"
+# uri = "https://www.ionos.com/digitalguide/" home page
+# uri = "https://www.ionos.com/digitalguide/websites/website-creation/the-best-website-builders/" preview page
+# uri till 10 = "https://www.ionos.com/digitalguide/items.json?tx_guides_loadarticleslist[action]=list&tx_guides_loadarticleslist[contentUid]=0&tx_guides_loadarticleslist[controller]=LoadArticles&tx_guides_loadarticleslist[currentPageUid]=1&tx_guides_loadarticleslist[firstResult]=10&tx_guides_loadarticleslist[hideArticles]=&tx_guides_loadarticleslist[hideTopArticles]=1&tx_guides_loadarticleslist[layout]=0&tx_guides_loadarticleslist[maxResults]=10&tx_guides_loadarticleslist[stickyArticles]=&cHash=c872d3d693c453430bd0b74f96da528c"
+# uri till 20 = "https://www.ionos.com/digitalguide/items.json?tx_guides_loadarticleslist[action]=list&tx_guides_loadarticleslist[contentUid]=0&tx_guides_loadarticleslist[controller]=LoadArticles&tx_guides_loadarticleslist[currentPageUid]=1&tx_guides_loadarticleslist[firstResult]=20&tx_guides_loadarticleslist[hideArticles]=&tx_guides_loadarticleslist[hideTopArticles]=1&tx_guides_loadarticleslist[layout]=0&tx_guides_loadarticleslist[maxResults]=10&tx_guides_loadarticleslist[stickyArticles]=&cHash=e57aef3f251abea1fd8ee9e9f54b8773"
 
 
 
 
-filter_it_list(uri)
+filter_it_list(uri, True)
 
 
 
