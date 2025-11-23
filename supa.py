@@ -43,10 +43,9 @@ def insert_supa(data):
     return response
 
 
-response = (
+#response = (
         supabase.table("videos")
-        .select()
-        .count("*")
+        .select("*", count="exact")
         .execute())
 print(response)
 
