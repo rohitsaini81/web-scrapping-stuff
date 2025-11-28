@@ -1,4 +1,6 @@
-/* listed all apps of uptodown
+/*
+ step 0 it's all ssr : https://en.uptodown.com/
+ listed all apps of uptodown
  step 1 select any random app
 https://tiktok-lite.en.uptodown.com/android
 
