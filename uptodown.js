@@ -2,6 +2,26 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 
+
+// TODO: this one is non ssr POST METHOD
+// Request parameters : {
+//   ------geckoformboundary9aaedfcda37a5b29ecff2b942d94c42e
+// Content-Disposition: form-data; name="page"
+
+// 2
+// ------geckoformboundary9aaedfcda37a5b29ecff2b942d94c42e--
+
+// }
+
+
+const url1 = "https://en.uptodown.com/android/apps/latest-updates"
+
+
+
+
+
+
+
 async function getFinalDownloadLink(appUrl) {
   try {
     // STEP 1 — Load main app page
