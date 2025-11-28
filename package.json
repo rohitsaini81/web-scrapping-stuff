@@ -1,0 +1,25 @@
+{
+  "name": "web-scrapping-stuff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "uptodown.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rohitsaini81/web-scrapping-stuff.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/rohitsaini81/web-scrapping-stuff/issues"
+  },
+  "homepage": "https://github.com/rohitsaini81/web-scrapping-stuff#readme",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "cheerio": "^1.1.2"
+  }
+}
