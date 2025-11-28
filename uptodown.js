@@ -87,16 +87,16 @@ async function getlistofApps(pageUrl) {
 }
 
 
-getlistofApps("https://en.uptodown.com/android/apps")
+// getlistofApps("https://en.uptodown.com/android/apps")
 
 
 
 
 
-import cheerio from "cheerio";
 
-function scrapeUptodown(html) {
-  const $ = cheerio.load(html);
+async function scrapeUptodown(url) {
+const pageHtml = await axios.get(url)
+  const $ = cheerio.load(pageHtml.data);
 
   const data = {};
 
@@ -152,8 +152,7 @@ function scrapeUptodown(html) {
   return data;
 }
 
-
-
+// scrapeUptodown("https://pixelc.en.uptodown.com/android").then((d)=>console.log(d))
 
 /*
  step 0 it's all ssr : https://en.uptodown.com/
