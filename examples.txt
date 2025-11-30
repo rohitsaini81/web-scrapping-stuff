@@ -1,0 +1,170 @@
+Absolutely — here is a **clean, ready-to-use SQL template** showing ALL the working queries you tested:
+
+---
+
+# ✅ **FULL SQL QUERY TEMPLATE**
+
+This template lets you retrieve:
+
+* The internal `app.id`
+* Full app details (from `app`)
+* Screenshots (from `app_screenshots`)
+* Versions (from `app_versions`)
+* All using only an `apps.app_id` input
+
+---
+
+# 1️⃣ **Get app.id from apps → app (via package_name)**
+
+```sql
+SELECT id
+FROM app
+WHERE package_name IN (
+    SELECT package_name 
+    FROM apps 
+    WHERE app_id = $APP_ID
+)
+LIMIT 1;
+```
+
+### Example
+
+```sql
+SELECT id
+FROM app
+WHERE package_name IN (
+    SELECT package_name 
+    FROM apps 
+    WHERE app_id = 1000318758
+)
+LIMIT 1;
+```
+
+---
+
+# 2️⃣ **Fetch App Details**
+
+```sql
+SELECT *
+FROM app
+WHERE id = $APP_INTERNAL_ID;
+```
+
+Example:
+
+```sql
+SELECT *
+FROM app
+WHERE id = 391;
+```
+
+---
+
+# 3️⃣ **Fetch Screenshots**
+
+```sql
+SELECT *
+FROM app_screenshots
+WHERE app_id = $APP_INTERNAL_ID;
+```
+
+Example:
+
+```sql
+SELECT *
+FROM app_screenshots
+WHERE app_id = 391;
+```
+
+---
+
+# 4️⃣ **Fetch Older Versions**
+
+```sql
+SELECT *
+FROM app_versions
+WHERE app_id = $APP_INTERNAL_ID;
+```
+
+Example:
+
+```sql
+SELECT *
+FROM app_versions
+WHERE app_id = 391;
+```
+
+---
+
+# ⭐ BONUS: 1-Click Query — **Everything in ONE query (JOINs)**
+
+This shows app info + screenshots + versions together.
+
+```sql
+SELECT 
+    a.*,
+    s.url AS screenshot,
+    v.version AS version_name,
+    v.release_date,
+    v.url AS version_url
+FROM apps ap
+JOIN app a 
+    ON a.package_name = ap.package_name
+LEFT JOIN app_screenshots s 
+    ON s.app_id = a.id
+LEFT JOIN app_versions v 
+    ON v.app_id = a.id
+WHERE ap.app_id = $APP_ID;
+```
+
+Example:
+
+```sql
+WHERE ap.app_id = 1000318758;
+```
+
+---
+
+# ⭐ PRO VERSION: Output everything as a single JSON object
+
+If you want the result in a clean JSON (one row):
+
+```sql
+SELECT json_build_object(
+    'app', a,
+    'screenshots', (
+        SELECT json_agg(url)
+        FROM app_screenshots
+        WHERE app_id = a.id
+    ),
+    'versions', (
+        SELECT json_agg(to_jsonb(v))
+        FROM app_versions v
+        WHERE v.app_id = a.id
+    )
+)
+FROM apps ap
+JOIN app a 
+    ON a.package_name = ap.package_name
+WHERE ap.app_id = $APP_ID;
+```
+
+---
+
+# Want a PostgreSQL VIEW?
+
+I can create a view like:
+
+```sql
+CREATE VIEW full_app_info AS (…)
+```
+
+So you can query:
+
+```sql
+SELECT * FROM full_app_info WHERE app_id = 1000318758;
+```
+
+---
+
+If you want the **VIEW**, just say “yes, create view”.

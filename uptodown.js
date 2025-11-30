@@ -1,9 +1,8 @@
 
-const axios = require("axios");
-const cheerio = require("cheerio");
-const FormData = require('form-data');
-
-
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import FormData from 'form-data'
+import pool, { fetchApps } from "./NODEJS/db.js"
 
 async function fetchUptoDownApi(url1) {
   const form = new FormData();
@@ -169,92 +168,41 @@ async function scrapeUptodown(url) {
 }
 
 
-
-
-
-
-
-
-const main = async () => {
-
-  // STEP 1
-  const url = "https://en.uptodown.com/android/apps/latest-updates"
-  // const apps = await fetchUptoDownApi(url)
-  const apps = []
-  
-  apps.map(async (app,index) => {
-    console.log(index);
-    
-    const app_obj = {
-      appID: app.appID,
-      name: app.name,
-      platformID: app.platformID,
-      shortDescription: app.shortDescription,
-      promotedApp: app.promotedApp,
-      author: app.author,
-      platformURL: app.platformURL,
-      platformName: app.platformName,
-      iconURL: app.iconURL,
-      appURL: app.appURL
-    }
-    // const { sql, values } = buildSqlQuery("Apps", app_obj);
-
-
-
-    // STEP 2
-    // const app_info = await scrapeUptodown(app.appURL)
-    // const { appSql, screenshotsSql, versionsSql } = buildAppSql(app_info);
-
-    // STEP 3
-    // const download_Url = await getFinalDownloadLink(appURL)
-    // request.downlaod(download_Url)
-
-
-
-
-    // STEP 4
-    // insert_to_database(table, query)
-
-  })
-
-
-}
-
-// main();
-
-
-
 function buildSqlQuery(table, data) {
   const columns = Object.keys(data);
-  const placeholders = columns.map(() => "?");
   const values = Object.values(data);
+
+  // PostgreSQL uses $1, $2, $3 placeholders
+  const placeholders = columns.map((_, idx) => `$${idx + 1}`);
 
   const sql = `
     INSERT INTO ${table} (${columns.join(", ")})
-    VALUES (${placeholders.join(", ")});
+    VALUES (${placeholders.join(", ")})
+    RETURNING *;
   `;
 
   return { sql, values };
 }
 
-function buildAppSql(app_info) {
-  // Escape single quotes for SQL safety
-  const esc = (v) =>
-    typeof v === "string" ? v.replace(/'/g, "''") : v;
 
-  // --- MAIN APP INSERT ---------------------------------
+function buildAppSql(app_id, app_info) {
+  const esc = (v) => typeof v === "string" ? v.replace(/'/g, "''") : v;
+
+  const rating = Number(app_info.rating) || 0;
+  const reviews = Number(app_info.reviews) || 0;
+  const downloads = Number(app_info.downloads) || 0; // <-- fix here
 
   const appSql = `
-INSERT INTO apps (
+INSERT INTO app (
   name, version, author, rating, reviews, downloads, last_updated,
   description, package_name, category, requirements
 ) VALUES (
   '${esc(app_info.name)}',
   '${esc(app_info.version)}',
   '${esc(app_info.author)}',
-  ${Number(app_info.rating)},
-  ${Number(app_info.reviews)},
-  ${Number(app_info.downloads)},
+  ${rating},
+  ${reviews},
+  ${downloads},
   '${new Date(app_info.lastUpdated).toISOString().split("T")[0]}',
   '${esc(app_info.description)}',
   '${esc(app_info.packageName)}',
@@ -263,21 +211,15 @@ INSERT INTO apps (
 )
 RETURNING id;`.trim();
 
-
-  // --- SCREENSHOTS INSERT -------------------------------
-
   const screenshotsSql = app_info.screenshots.map(url => `
 INSERT INTO app_screenshots (app_id, url)
-VALUES ($APP_ID$, '${esc(url)}');`.trim()
+VALUES (${app_id}, '${esc(url)}');`.trim()
   ).join("\n");
-
-
-  // --- OLDER VERSIONS INSERT ----------------------------
 
   const versionsSql = app_info.olderVersions.map(v => `
 INSERT INTO app_versions (app_id, type, version, sdk, release_date, url, version_id)
 VALUES (
-  $APP_ID$,
+  ${app_id},
   '${esc(v.type)}',
   '${esc(v.version)}',
   '${esc(v.sdk)}',
@@ -287,6 +229,76 @@ VALUES (
 );`.trim()
   ).join("\n");
 
-
   return { appSql, screenshotsSql, versionsSql };
 }
+
+
+
+
+const main = async () => {
+
+  // STEP 1
+  // const url = "https://en.uptodown.com/android/apps/latest-updates"
+  // const apps = await fetchUptoDownApi(url)
+
+  // apps.map(async (app, index) => {
+  //   console.log(index);
+
+  //   const app_obj = {
+  //   app_id: app.appID,
+  //   name: app.name,
+  //   platform_id: app.platformID,
+  //   short_description: app.shortDescription,
+  //   promoted_app: app.promotedApp,
+  //   author: app.author,
+  //   platform_url: app.platformURL,
+  //   platform_name: app.platformName,
+  //   icon_url: app.iconURL,
+  //   app_url: app.appURL
+  // }; 
+  // const { sql, values } = buildSqlQuery("apps", app_obj);
+  // const response_db = await pool.query(sql, values)
+  // console.log('inserted app in list of apps');
+  // console.log(response_db.rows)
+  // console.log(response_db.rows);
+
+
+
+
+
+
+
+  // })
+
+
+
+  // STEP 2
+  // const apps = await fetchApps("apps")
+  const apps = []
+  apps.map(async (app) => {
+
+    const app_info = await scrapeUptodown(app.app_url)
+    const { appSql } =  buildAppSql(app.id, app_info);
+    // console.log(appSql)
+    const response_db_app = await pool.query(appSql)
+    console.log(response_db_app.rows[0].id);
+
+    const { screenshotsSql, versionsSql } = buildAppSql(response_db_app.rows[0].id, app_info);
+
+    const response_db_ss = await pool.query(screenshotsSql)
+    console.log(response_db_ss.rows);
+    
+    const response_db_v = await pool.query(versionsSql)
+    console.log(response_db_v);
+    
+    // STEP 3
+    // const download_Url = await getFinalDownloadLink(appURL)
+    // request.downlaod(download_Url)
+
+    // STEP 4
+    // insert_to_database(table, query)
+  })
+
+}
+
+// main();
