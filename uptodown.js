@@ -1,25 +1,25 @@
 
 const axios = require("axios");
 const cheerio = require("cheerio");
-
-
-// TODO: this one is non ssr POST METHOD
-// Request parameters : {
-//   ------geckoformboundary9aaedfcda37a5b29ecff2b942d94c42e
-// Content-Disposition: form-data; name="page"
-
-// 2
-// ------geckoformboundary9aaedfcda37a5b29ecff2b942d94c42e--
-
-// }
-
-
-const url1 = "https://en.uptodown.com/android/apps/latest-updates"
+const FormData = require('form-data');
 
 
 
+async function fetchUptoDownApi(url1) {
+  const form = new FormData();
+  form.append("page", "2");
+  try {
 
+    const response = await axios.post(url1, form, {
+      headers: form.getHeaders()
+    })
+    return response.data
+  }
+  catch (err) {
+    throw new Error(err);
 
+  }
+}
 
 
 async function getFinalDownloadLink(appUrl) {
@@ -35,7 +35,7 @@ async function getFinalDownloadLink(appUrl) {
       throw new Error("Download page URL not found.");
     }
 
-    console.log("Download page:", downloadPageUrl);
+    // console.log("Download page:", downloadPageUrl);
 
     // STEP 3 — Load the download page and extract token
     const downloadPage = await axios.get(downloadPageUrl);
@@ -47,12 +47,12 @@ async function getFinalDownloadLink(appUrl) {
       throw new Error("Download token not found.");
     }
 
-    console.log("Token:", token);
+    // console.log("Token:", token);
 
     // Build the redirect URL exactly like the browser iframe does
     const iframeUrl = "https://dw.uptodown.net/dwn/" + token;
 
-    console.log("Redirect URL:", iframeUrl);
+    // console.log("Redirect URL:", iframeUrl);
 
     // STEP 4 — Follow redirects to get the FINAL download link
     const final = await axios.get(iframeUrl, {
@@ -61,21 +61,19 @@ async function getFinalDownloadLink(appUrl) {
     });
 
     const finalUrl = final.request.res.responseUrl;
-
-    console.log("\n🔥 FINAL DIRECT DOWNLOAD LINK:");
-    console.log(finalUrl);
+    return finalUrl;
+    // console.log("\n🔥 FINAL DIRECT DOWNLOAD LINK:");
+    // console.log(finalUrl);
 
   } catch (err) {
     console.error("Error:", err.message);
   }
 }
-
-// getFinalDownloadLink("https://tiktok-lite.en.uptodown.com/android");
-
+// getFinalDownloadLink("https://tiktok-lite.en.uptodown.com/android");.apk url
 
 
 
-// document.getElementsByClassName("content")[1].childNodes[1]
+
 async function getlistofApps(pageUrl) {
   try {
     const page = await axios.get(pageUrl);
@@ -105,8 +103,6 @@ async function getlistofApps(pageUrl) {
     console.log(error)
   }
 }
-
-
 // getlistofApps("https://en.uptodown.com/android/apps")
 
 
@@ -115,7 +111,7 @@ async function getlistofApps(pageUrl) {
 
 
 async function scrapeUptodown(url) {
-const pageHtml = await axios.get(url)
+  const pageHtml = await axios.get(url)
   const $ = cheerio.load(pageHtml.data);
 
   const data = {};
@@ -172,31 +168,125 @@ const pageHtml = await axios.get(url)
   return data;
 }
 
-// scrapeUptodown("https://pixelc.en.uptodown.com/android").then((d)=>console.log(d))
 
-/*
- step 0 it's all ssr : https://en.uptodown.com/
- listed all apps of uptodown
- step 1 select any random app
-https://tiktok-lite.en.uptodown.com/android
 
-step 2 get that download page url form ancor tag inside get latest version download button
-https://tiktok.en.uptodown.com/android/download
 
-step 3 extract download token and fetch download link using this function :*/
-// (function() {
-//   const token = document.querySelector('#detail-download-button').dataset.url;
-//   const url = "https://dw.uptodown.net/dwn/" + token;
 
-//   const iframe = document.createElement("iframe");
-//   iframe.style.display = "none";
 
-//   iframe.onload = function () {
-//     console.log("Final URL:", iframe.src);
-//     document.body.removeChild(iframe);
-//   };
 
-//   iframe.src = url;
-//   document.body.appendChild(iframe);
-// })();
 
+const main = async () => {
+
+  // STEP 1
+  const url = "https://en.uptodown.com/android/apps/latest-updates"
+  // const apps = await fetchUptoDownApi(url)
+  const apps = []
+  
+  apps.map(async (app,index) => {
+    console.log(index);
+    
+    const app_obj = {
+      appID: app.appID,
+      name: app.name,
+      platformID: app.platformID,
+      shortDescription: app.shortDescription,
+      promotedApp: app.promotedApp,
+      author: app.author,
+      platformURL: app.platformURL,
+      platformName: app.platformName,
+      iconURL: app.iconURL,
+      appURL: app.appURL
+    }
+    // const { sql, values } = buildSqlQuery("Apps", app_obj);
+
+
+
+    // STEP 2
+    // const app_info = await scrapeUptodown(app.appURL)
+    // const { appSql, screenshotsSql, versionsSql } = buildAppSql(app_info);
+
+    // STEP 3
+    // const download_Url = await getFinalDownloadLink(appURL)
+    // request.downlaod(download_Url)
+
+
+
+
+    // STEP 4
+    // insert_to_database(table, query)
+
+  })
+
+
+}
+
+// main();
+
+
+
+function buildSqlQuery(table, data) {
+  const columns = Object.keys(data);
+  const placeholders = columns.map(() => "?");
+  const values = Object.values(data);
+
+  const sql = `
+    INSERT INTO ${table} (${columns.join(", ")})
+    VALUES (${placeholders.join(", ")});
+  `;
+
+  return { sql, values };
+}
+
+function buildAppSql(app_info) {
+  // Escape single quotes for SQL safety
+  const esc = (v) =>
+    typeof v === "string" ? v.replace(/'/g, "''") : v;
+
+  // --- MAIN APP INSERT ---------------------------------
+
+  const appSql = `
+INSERT INTO apps (
+  name, version, author, rating, reviews, downloads, last_updated,
+  description, package_name, category, requirements
+) VALUES (
+  '${esc(app_info.name)}',
+  '${esc(app_info.version)}',
+  '${esc(app_info.author)}',
+  ${Number(app_info.rating)},
+  ${Number(app_info.reviews)},
+  ${Number(app_info.downloads)},
+  '${new Date(app_info.lastUpdated).toISOString().split("T")[0]}',
+  '${esc(app_info.description)}',
+  '${esc(app_info.packageName)}',
+  '${esc(app_info.category)}',
+  ARRAY[${app_info.requirements.map(r => `'${esc(r)}'`).join(", ")}]
+)
+RETURNING id;`.trim();
+
+
+  // --- SCREENSHOTS INSERT -------------------------------
+
+  const screenshotsSql = app_info.screenshots.map(url => `
+INSERT INTO app_screenshots (app_id, url)
+VALUES ($APP_ID$, '${esc(url)}');`.trim()
+  ).join("\n");
+
+
+  // --- OLDER VERSIONS INSERT ----------------------------
+
+  const versionsSql = app_info.olderVersions.map(v => `
+INSERT INTO app_versions (app_id, type, version, sdk, release_date, url, version_id)
+VALUES (
+  $APP_ID$,
+  '${esc(v.type)}',
+  '${esc(v.version)}',
+  '${esc(v.sdk)}',
+  '${new Date(v.date).toISOString().split("T")[0]}',
+  '${esc(v.url)}',
+  '${esc(v.versionId)}'
+);`.trim()
+  ).join("\n");
+
+
+  return { appSql, screenshotsSql, versionsSql };
+}
