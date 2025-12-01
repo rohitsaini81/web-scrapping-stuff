@@ -11,6 +11,12 @@ apps_data = [
     {"app_id": 1004, "name": "GameHub", "platform": "Android"},
 ]
 
+import requests
+
+response_apps = requests.get("http://localhost:5000/api/apps")
+apps = response_apps.json()
+
+
 # -------------------------------------------
 # GUI APPLICATION
 # -------------------------------------------
@@ -30,7 +36,7 @@ def main():
     # Treeview (Table)
     columns = ("app_id", "name", "platform")
     table = ttk.Treeview(frame, columns=columns, show="headings")
-    
+
     # Column Titles
     table.heading("app_id", text="App ID")
     table.heading("name", text="Name")
@@ -42,8 +48,8 @@ def main():
     table.column("platform", width=150)
 
     # Insert Data
-    for app in apps_data:
-        table.insert("", tk.END, values=(app["app_id"], app["name"], app["platform"]))
+    for app in apps:
+        table.insert("", tk.END, values=(app["id"], app["name"], app["downloads"]))
 
     table.pack(fill="both", expand=True, padx=10, pady=10)
 

@@ -15,6 +15,13 @@ temp_apps = [
     {"app_id": 1004, "name": "Snapchat", "platform": "Android"},
 ]
 
+import requests
+
+response_apps = requests.get("http://localhost:5000/api/apps")
+apps = response_apps.json()
+
+
+
 
 class AppListWindow(QMainWindow):
     def __init__(self):
@@ -37,16 +44,16 @@ class AppListWindow(QMainWindow):
         self.setCentralWidget(container)
 
         # Load temp data
-        self.load_apps(temp_apps)
+        self.load_apps(apps)
 
     def load_apps(self, apps):
         """Load list of apps into the table."""
         self.table.setRowCount(len(apps))
 
         for row, app in enumerate(apps):
-            self.table.setItem(row, 0, QTableWidgetItem(str(app["app_id"])))
+            self.table.setItem(row, 0, QTableWidgetItem(str(app["id"])))
             self.table.setItem(row, 1, QTableWidgetItem(app["name"]))
-            self.table.setItem(row, 2, QTableWidgetItem(app["platform"]))
+            self.table.setItem(row, 2, QTableWidgetItem(app["downloads"]))
 
 
 # -------------------------------------
