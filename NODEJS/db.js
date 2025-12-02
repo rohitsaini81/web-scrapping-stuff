@@ -18,7 +18,7 @@ if (!connectionString) {
 //  'postgres://rohitsaini:mypassword@localhost:5432/mydatabase';
 
 const pool = new Pool({
-  connectionString:connectionString,
+  connectionString: connectionString,
 });
 
 console.log(connectionString)
@@ -32,7 +32,7 @@ export async function fetchApps(tableName) {
   try {
     console.log("heyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
     const result = await pool.query(`SELECT * FROM ${tableName}`);
-    return result.rows; 
+    return result.rows;
   } catch (err) {
     console.error('Error fetching blogs:', err);
     throw err;
@@ -48,7 +48,7 @@ export async function fetchBlogPost(slug) {
       'SELECT * FROM blogs WHERE title = $1',
       [decodedSlug]
     );
-    return result.rows[0]; 
+    return result.rows[0];
   } catch (err) {
     console.error('Error fetching blogs:', err);
     throw err;
@@ -61,16 +61,35 @@ export async function fetchBlogPost(slug) {
 
 
 
-export async function fetchBlogPostContent(blog_id) {
+export async function fetchAppById(app_id) {
   try {
-    // console.log(blog_id)
+
     const result = await pool.query(
-      'SELECT * FROM blog_posts WHERE blog_id = $1',
-      [blog_id]
+      `SELECT * FROM app 
+       WHERE package_name IN (
+         SELECT package_name FROM apps WHERE app_id = ${app_id}
+       );`,
     );
-    return result.rows[0]; 
+
+    return result.rows[0];
+  } catch (err) {
+    console.error('Error fetching app:', err);
+    throw err;
+  }
+}
+
+
+export async function fetchAppSSById(app_id) {
+
+    try {
+    const result = await pool.query(
+      'select * from "app_screenshots" where app_id=$1;',
+      [app_id]
+    );
+    return result.rows;
   } catch (err) {
     console.error('Error fetching blogs:', err);
     throw err;
   }
+  
 }

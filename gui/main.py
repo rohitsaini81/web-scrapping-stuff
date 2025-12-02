@@ -62,7 +62,8 @@ class AppsListScreen(tk.Frame):
 
         # Insert API Data
         for app in root.apps:
-            self.table.insert("", tk.END, values=(app["id"], app["name"], app["downloads"]))
+            # print(app)
+            self.table.insert("", tk.END, values=(app["app_id"], app["name"], app["short_description"]))
 
         self.table.pack(fill="both", expand=True, padx=20, pady=10)
 
@@ -75,10 +76,10 @@ class AppsListScreen(tk.Frame):
             return
 
         values = self.table.item(selected, "values")
-        app_id, name, platform = values
+        app_id, name, short_description = values
 
         # Switch to preview screen
-        self.root.show_screen(PreviewScreen, app_id, name, platform)
+        self.root.show_screen(PreviewScreen, app_id, name, short_description)
 
 
 if __name__ == "__main__":
