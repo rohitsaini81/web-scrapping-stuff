@@ -1,0 +1,105 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <BaseHead title="Admin Panel" description="Manage content" />
+    </head>
+    <body>
+        <Header />
+
+        <main>
+            <h1>Admin Panel — CRUD</h1>
+
+            <section>
+                <h2>Create New Post</h2>
+                <form id="createForm">
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="Title"
+                        required
+                    />
+                    <textarea name="content" placeholder="Content" required
+                    ></textarea>
+                    <button type="submit">Add</button>
+                </form>
+            </section>
+
+            <section>
+                <h2>All Posts</h2>
+                <div id="posts"></div>
+            </section>
+        </main>
+
+        <Footer />
+
+        <script>
+            async function loadPosts() {
+                const res = await fetch("/api/posts.json");
+                const posts = await res.json();
+
+                document.getElementById("posts").innerHTML = posts
+                    .map(
+                        (p) => `
+        <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+          <h3>${p.title}</h3>
+          <p>${p.content}</p>
+
+          <button onclick="editPost(${p.id}, '${p.title}', \`${p.content}\`)">Edit</button>
+          <button onclick="deletePost(${p.id})">Delete</button>
+        </div>
+      `,
+                    )
+                    .join("");
+            }
+
+            document.getElementById("createForm").onsubmit = async (e) => {
+                e.preventDefault();
+                const form = new FormData(e.target);
+
+                await fetch("/api/create", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        title: form.get("title"),
+                        content: form.get("content"),
+                    }),
+                });
+
+                e.target.reset();
+                loadPosts();
+            };
+
+            window.editPost = (id, title, content) => {
+                const newTitle = prompt("Edit title:", title);
+                const newContent = prompt("Edit content:", content);
+
+                if (newTitle && newContent) {
+                    fetch("/api/update", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            id,
+                            title: newTitle,
+                            content: newContent,
+                        }),
+                    }).then(loadPosts);
+                }
+            };
+
+            window.deletePost = (id) => {
+                if (confirm("Delete this post?")) {
+                    fetch("/api/delete", {
+                        method: "POST",
+                        body: JSON.stringify({ id }),
+                    }).then(loadPosts);
+                }
+            };
+
+            loadPosts();
+        </script>
+    </body>
+</html>
