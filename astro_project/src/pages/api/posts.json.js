@@ -1,7 +1,8 @@
-import { posts } from "../../data/posts.js";
+export async function GET() {
+  const response = await fetch("http://localhost:5000/api/apps");
+  const data = await response.json();
 
-export async function get() {
-  return new Response(JSON.stringify(posts), {
+  return new Response(JSON.stringify(data), {
     headers: { "Content-Type": "application/json" },
   });
 }

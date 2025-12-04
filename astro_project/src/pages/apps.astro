@@ -1,0 +1,180 @@
+---
+const response = await fetch("http://localhost:4321/api/posts.json");
+const apps = await response.json();
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Apps List</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2rem;
+        background: #fafafa;
+      }
+
+      h1 {
+        margin-bottom: 1rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .card {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .card:hover {
+        transform: translateY(-3px);
+      }
+
+      .card img {
+        width: 64px;
+        height: 64px;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+      }
+
+      .card h3 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .buttons {
+        margin-top: 0.8rem;
+        display: flex;
+        gap: 0.7rem;
+      }
+
+      button {
+        flex: 1;
+        padding: 0.4rem;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .edit-btn {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .delete-btn {
+        background: #ef4444;
+        color: white;
+      }
+
+      /* Modal */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+      }
+
+      .modal img {
+        width: 90px;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+      }
+
+      .close-btn {
+        margin-top: 1rem;
+        width: 100%;
+        padding: 0.6rem;
+        border: none;
+        border-radius: 6px;
+        background: #555;
+        color: white;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Apps List</h1>
+
+    <div class="grid">
+      {apps.map((app) => (
+        <div class="card" data-app={JSON.stringify(app)}>
+          <img src={app.icon_url} alt="icon" />
+          <h3>{app.name}</h3>
+          <p>{app.short_description || "No description available."}</p>
+
+          <div class="buttons" on:click|stopPropagation>
+            <button class="edit-btn" onclick={`editApp(${app.id})`}>Edit</button>
+            <button class="delete-btn" onclick={`deleteApp(${app.id})`}>Delete</button>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+      <div class="modal" id="modal">
+        <img id="modalIcon" src="" alt="" />
+        <h2 id="modalName"></h2>
+        <p id="modalAuthor"></p>
+        <p id="modalDescription"></p>
+        <a id="modalLink" href="#" target="_blank">Open App Page</a>
+
+        <button class="close-btn" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+
+    <script>
+      // Handle preview modal
+      document.querySelectorAll(".card").forEach((card) => {
+        card.addEventListener("click", () => {
+          const app = JSON.parse(card.dataset.app);
+
+          document.getElementById("modalIcon").src = app.icon_url;
+          document.getElementById("modalName").textContent = app.name;
+          document.getElementById("modalAuthor").textContent = "By: " + app.author;
+          document.getElementById("modalDescription").textContent =
+            app.short_description || "No description provided.";
+          document.getElementById("modalLink").href = app.app_url;
+
+          document.getElementById("modalOverlay").style.display = "flex";
+        });
+      });
+
+      function closeModal() {
+        document.getElementById("modalOverlay").style.display = "none";
+      }
+
+      // Edit button handler
+      function editApp(id) {
+        window.location.href = `/edit/${id}`;
+      }
+
+      // Delete button handler
+      async function deleteApp(id) {
+        if (confirm("Are you sure you want to delete this app?")) {
+          await fetch(`/api/delete/${id}`, { method: "DELETE" });
+          window.location.reload();
+        }
+      }
+    </script>
+  </body>
+</html>
