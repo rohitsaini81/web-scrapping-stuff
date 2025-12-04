@@ -10,6 +10,12 @@ res.send(apps)
 
 })
 
+app.get("/api/blogs",async(req, res)=>{
+const apps = await fetchApps("blogs")
+res.send(apps)
+
+})
+
 
 app.get("/api/app/:id", async (req, res) => {
   const id = req.params.id;
