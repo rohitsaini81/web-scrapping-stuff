@@ -1,4 +1,6 @@
+
 ---
+import Header from "../components/Header.astro";
 const response = await fetch("http://localhost:4321/api/posts.json");
 const apps = await response.json();
 ---
@@ -7,146 +9,217 @@ const apps = await response.json();
   <head>
     <meta charset="utf-8" />
     <title>Apps List</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
     <style>
-      body { font-family: Arial, sans-serif; margin: 2rem; background: #fafafa; }
-      h1 { margin-bottom: 1rem; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1.5rem; }
-      .card { background:#fff; padding:1rem; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1); cursor:pointer; transition:0.18s; display:flex; flex-direction:column; }
-      .card:hover { transform:translateY(-3px); }
-      .top { display:flex; gap:1rem; align-items:center; }
-      .card img { width:64px; height:64px; border-radius:8px; object-fit:cover; }
-      .card h3 { margin:0; font-size:1.1rem; }
-      .card p { margin:0.6rem 0 0; color:#444; flex:1; }
-      .buttons { margin-top:0.8rem; display:flex; gap:0.6rem; }
-      button { padding:0.45rem; border-radius:6px; border:none; cursor:pointer; font-weight:600; }
-      .edit-btn { background:#3b82f6; color:#fff; }
-      .delete-btn { background:#ef4444; color:#fff; }
-      /* Modal */
-      .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:999; }
-      .modal { background:#fff; padding:1.5rem; border-radius:12px; width:90%; max-width:520px; box-shadow:0 6px 30px rgba(0,0,0,0.25); }
-      .modal img { width:90px; height:90px; border-radius:12px; object-fit:cover; margin-bottom:0.75rem; }
-      .modal a { display:inline-block; margin-top:0.55rem; text-decoration:underline; }
-      .close-btn { margin-top:1rem; width:100%; padding:0.6rem; border:none; border-radius:6px; background:#444; color:#fff; cursor:pointer; }
-      @media (max-width:420px){ .top { flex-direction:row } }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2rem;
+        background: #f7f8fa;
+      }
+
+      h1 {
+        margin-bottom: 1rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .card {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+      }
+
+      .card img {
+        width: 64px;
+        height: 64px;
+        border-radius: 10px;
+        object-fit: cover;
+      }
+
+      .card h3 {
+        margin: 0.5rem 0 0;
+        font-size: 1.2rem;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 0.6rem;
+        margin-top: 0.5rem;
+      }
+
+      .edit-btn,
+      .delete-btn {
+        flex: 1;
+        padding: 0.5rem;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .edit-btn {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .delete-btn {
+        background: #ef4444;
+        color: white;
+      }
+
+      /* MODAL */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal {
+        background: #fff;
+        padding: 1.8rem;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+        animation: fadeIn 0.25s ease;
+      }
+
+      .modal img {
+        width: 90px;
+        height: 90px;
+        border-radius: 14px;
+        object-fit: cover;
+      }
+
+      .modal h2 {
+        margin: 0.7rem 0 0;
+      }
+
+      .close-btn {
+        margin-top: 1.2rem;
+        width: 100%;
+        padding: 0.7rem;
+        background: #444;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+      }
     </style>
   </head>
 
   <body>
+        <Header />
+
     <h1>Apps List</h1>
 
     <div class="grid" id="grid">
       {apps.map((app) => (
-        <div class="card" data-id={app.id} data-app={JSON.stringify(app)}>
-          <div class="top">
-            <img src={app.icon_url} alt={`${app.name} icon`} loading="lazy" />
-            <div>
-              <h3>{app.name}</h3>
-              <div style="font-size:0.9rem;color:#666">{app.platform_name} · {app.author}</div>
-            </div>
-          </div>
+        <div class="card" data-app={JSON.stringify(app)}>
+          <img src={app.icon_url} alt={app.name} />
+          <h3>{app.name}</h3>
+          <p>{app.short_description || "No description"}</p>
 
-          <p>{app.short_description || "No description available."}</p>
-
-          <div class="buttons">
-            <button class="edit-btn" type="button" data-action="edit">Edit</button>
-            <button class="delete-btn" type="button" data-action="delete">Delete</button>
+          <div class="buttons" on:click|stopPropagation>
+            <button class="edit-btn" data-id={app.id}>Edit</button>
+            <button class="delete-btn" data-id={app.id}>Delete</button>
           </div>
         </div>
       ))}
     </div>
 
-    <!-- Preview Modal -->
-    <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
-      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalName">
-        <img id="modalIcon" src="" alt="" />
+    <!-- Modal Preview -->
+    <div id="modalOverlay" class="modal-overlay">
+      <div class="modal">
+        <img id="modalIcon" src="" />
         <h2 id="modalName"></h2>
         <p id="modalAuthor"></p>
-        <p id="modalDescription"></p>
-        <a id="modalLink" href="#" target="_blank" rel="noopener">Open App Page</a>
-        <button id="closeBtn" class="close-btn" type="button">Close</button>
+        <p id="modalDesc"></p>
+        <a id="modalLink" href="#" target="_blank">Open App Page</a>
+
+        <button class="close-btn" id="closeModalBtn">Close</button>
       </div>
     </div>
 
     <script>
-      // Plain script (not using inline onclicks). Works in module or non-module contexts.
-      (function () {
-        const grid = document.getElementById("grid");
-        const overlay = document.getElementById("modalOverlay");
-        const modalIcon = document.getElementById("modalIcon");
-        const modalName = document.getElementById("modalName");
-        const modalAuthor = document.getElementById("modalAuthor");
-        const modalDescription = document.getElementById("modalDescription");
-        const modalLink = document.getElementById("modalLink");
-        const closeBtn = document.getElementById("closeBtn");
+      // Get elements
+      const grid = document.getElementById("grid");
+      const overlay = document.getElementById("modalOverlay");
+      const closeBtn = document.getElementById("closeModalBtn");
 
-        // Open preview modal for an app object
-        function openPreview(app) {
-          modalIcon.src = app.icon_url || "";
-          modalName.textContent = app.name || "Untitled";
-          modalAuthor.textContent = app.author ? "By: " + app.author : "";
-          modalDescription.textContent = app.short_description || "No description provided.";
-          modalLink.href = app.app_url || "#";
-          overlay.style.display = "flex";
-          overlay.setAttribute("aria-hidden", "false");
-          // focus for accessibility
-          closeBtn.focus();
+      const modalIcon = document.getElementById("modalIcon");
+      const modalName = document.getElementById("modalName");
+      const modalAuthor = document.getElementById("modalAuthor");
+      const modalDesc = document.getElementById("modalDesc");
+      const modalLink = document.getElementById("modalLink");
+
+      // OPEN POPUP
+      function openPopup(app) {
+        modalIcon.src = app.icon_url;
+        modalName.textContent = app.name;
+        modalAuthor.textContent = "By: " + app.author;
+        modalDesc.textContent = app.short_description || "No description";
+        modalLink.href = app.app_url;
+
+        overlay.style.display = "flex";
+      }
+
+      // CLOSE POPUP
+      function closePopup() {
+        overlay.style.display = "none";
+      }
+
+      closeBtn.addEventListener("click", closePopup);
+
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) closePopup();
+      });
+
+      // CLICK HANDLING
+      grid.addEventListener("click", (e) => {
+        const card = e.target.closest(".card");
+        if (!card) return;
+
+        const app = JSON.parse(card.dataset.app);
+
+        // Edit button
+        if (e.target.matches(".edit-btn")) {
+          window.location.href = `/edit/${app.id}`;
+          return;
         }
 
-        function closePreview() {
-          overlay.style.display = "none";
-          overlay.setAttribute("aria-hidden", "true");
+        // Delete button
+        if (e.target.matches(".delete-btn")) {
+          if (confirm("Delete this app?")) {
+            fetch(`/api/delete/${app.id}`, { method: "DELETE" })
+              .then(() => location.reload());
+          }
+          return;
         }
 
-        // Click card to preview
-        grid.querySelectorAll(".card").forEach((card) => {
-          // Preview on card click (but not when clicking buttons)
-          card.addEventListener("click", (ev) => {
-            // if click originated from a button, ignore here
-            if (ev.target.closest("button")) return;
-            const app = JSON.parse(card.getAttribute("data-app"));
-            openPreview(app);
-          });
-
-          // Edit/Delete buttons
-          const editBtn = card.querySelector('button[data-action="edit"]');
-          const delBtn = card.querySelector('button[data-action="delete"]');
-
-          editBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const id = card.getAttribute("data-id");
-            // navigate to edit page — create this route yourself
-            window.location.href = `/edit/${id}`;
-          });
-
-          delBtn.addEventListener("click", async (e) => {
-            e.stopPropagation();
-            const id = card.getAttribute("data-id");
-            if (!confirm("Are you sure you want to delete this app?")) return;
-            try {
-              const res = await fetch(`/api/delete/${id}`, { method: "DELETE" });
-              if (!res.ok) throw new Error("Delete failed");
-              // remove card from DOM for instant feedback
-              card.remove();
-            } catch (err) {
-              alert("Could not delete: " + err.message);
-            }
-          });
-        });
-
-        // Close controls
-        closeBtn.addEventListener("click", closePreview);
-
-        // Click outside modal to close
-        overlay.addEventListener("click", (e) => {
-          if (e.target === overlay) closePreview();
-        });
-
-        // Escape key closes modal
-        window.addEventListener("keydown", (e) => {
-          if (e.key === "Escape") closePreview();
-        });
-      })();
+        // OPEN PREVIEW POPUP
+        openPopup(app);
+      });
     </script>
   </body>
 </html>
