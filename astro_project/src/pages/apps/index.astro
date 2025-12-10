@@ -1,6 +1,9 @@
 
 ---
 import Header from "../../components/Header.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import { getCollection } from 'astro:content';
+
 const response = await fetch("http://localhost:4321/api/posts.json");
 const apps = await response.json();
 ---
