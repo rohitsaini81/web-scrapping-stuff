@@ -6,6 +6,8 @@ const app = express()
 
 app.get("/api/apps",async(req, res)=>{
 const apps = await fetchApps("apps")
+console.log(apps);
+
 res.send(apps)
 
 })
@@ -18,6 +20,7 @@ res.send(apps)
 
 
 app.get("/api/app/:id", async (req, res) => {
+  // http://localhost:5000/api/app/1319636
   const id = req.params.id;
 
   if (!id || isNaN(id)) {

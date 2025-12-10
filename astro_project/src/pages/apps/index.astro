@@ -1,6 +1,6 @@
 
 ---
-import Header from "../components/Header.astro";
+import Header from "../../components/Header.astro";
 const response = await fetch("http://localhost:4321/api/posts.json");
 const apps = await response.json();
 ---
@@ -204,7 +204,7 @@ const apps = await response.json();
 
         // Edit button
         if (e.target.matches(".edit-btn")) {
-          window.location.href = `/edit/${app.id}`;
+          window.location.href = `/apps/${app.app_id}`;
           return;
         }
 
