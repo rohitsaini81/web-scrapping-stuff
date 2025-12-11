@@ -61,14 +61,12 @@ export async function fetchBlogPost(slug) {
 
 
 
-export async function fetchAppById(app_id) {
+export async function fetchAppBySlug(app_name) {
   try {
-
+    console.log(app_name);
+    
     const result = await pool.query(
-      `SELECT * FROM app 
-       WHERE package_name IN (
-         SELECT package_name FROM apps WHERE app_id = ${app_id}
-       );`,
+      `SELECT * FROM app WHERE name = ${app_name};`,
     );
 
     return result.rows[0];

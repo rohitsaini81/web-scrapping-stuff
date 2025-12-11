@@ -1,4 +1,4 @@
-import { fetchAppById, fetchApps, fetchAppSSById } from "./NODEJS/db.js";
+import { fetchAppBySlug, fetchApps, fetchAppSSById } from "./NODEJS/db.js";
 import express from 'express'
 
 const app = express()
@@ -19,17 +19,15 @@ res.send(apps)
 })
 
 
-app.get("/api/app/:id", async (req, res) => {
+app.get("/api/app/:app_name", async (req, res) => {
   // http://localhost:5000/api/app/1319636
-  const id = req.params.id;
-
-  if (!id || isNaN(id)) {
+  const app_name = req.params.app_name;
+  if (!app_name) {
     return res.status(400).json({ error: "Invalid ID" });
   }
 
   try {
-    const app_id = parseInt(id)
-    const app = await fetchAppById(app_id);
+    const app = await fetchAppBySlug(app_name);
 
     if (!app) {
       return res.status(404).json({ error: "App not found", id });
