@@ -28,7 +28,8 @@ app.get("/api/app/:app_name", async (req, res) => {
 
   try {
     const app = await fetchAppBySlug(app_name);
-
+    console.log(app);
+    
     if (!app) {
       return res.status(404).json({ error: "App not found", app_name });
     }
