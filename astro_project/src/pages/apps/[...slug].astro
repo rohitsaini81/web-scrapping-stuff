@@ -1,19 +1,14 @@
 ---
-export async function getStaticPaths() {
-  // Fetch list of available slugs from your API
-  const slug = Astro.params.slug;
-  const res = await fetch("http://localhost:4321/api/app/"+slug);
-  const apps = await res.json();
+export const prerender = false;
 
-  console.log(apps);
-  
-  return apps.map(app => ({
-    params: { slug: app.app_id.toString() },
-    props: { app }
-  }));
-}
+const slug = Astro.params.slug;
 
-const { app } = Astro.props;
+const res = await fetch(`http://localhost:4321/api/app/${slug}.json`);
+const app = await res.json();
+console.log(app);
+
 ---
 
-<h1>{app.name}</h1>
+<h1>{"app.name"}</h1>
+<!-- <p>{app.short_description}</p> -->
+<!-- <img src={app.icon_url} width="120" /> -->
