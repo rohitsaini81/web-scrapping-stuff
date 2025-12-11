@@ -65,9 +65,11 @@ export async function fetchAppBySlug(app_name) {
   try {
     console.log(app_name);
     
-    const result = await pool.query(
-      `SELECT * FROM app WHERE name = ${app_name};`,
+       const result = await pool.query(
+      `SELECT * FROM app WHERE name = $1;`,
+      [app_name]
     );
+
 
     return result.rows[0];
   } catch (err) {

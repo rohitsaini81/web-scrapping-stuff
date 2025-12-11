@@ -30,7 +30,7 @@ app.get("/api/app/:app_name", async (req, res) => {
     const app = await fetchAppBySlug(app_name);
 
     if (!app) {
-      return res.status(404).json({ error: "App not found", id });
+      return res.status(404).json({ error: "App not found", app_name });
     }
 
     return res.json(app);  // ALWAYS return JSON
