@@ -5,10 +5,98 @@ const slug = Astro.params.slug;
 
 const res = await fetch(`http://localhost:4321/api/app/${slug}.json`);
 const app = await res.json();
-console.log(app);
+// console.log(app);
 
 ---
 
-<h1>{"app.name"}</h1>
-<!-- <p>{app.short_description}</p> -->
-<!-- <img src={app.icon_url} width="120" /> -->
+<style>
+  .app-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    font-family: system-ui, sans-serif;
+  }
+
+  .app-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .app-header img {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+
+  .app-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .app-meta {
+    margin-top: 0.5rem;
+    color: #aaa;
+  }
+
+  .app-description {
+    margin-top: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .app-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    font-weight: 500;
+  }
+
+  .app-requirements {
+    margin-top: 1rem;
+    font-style: italic;
+    color: #ccc;
+  }
+</style>
+
+<div class="app-container">
+  <div class="app-header">
+    <!-- Optional: icon image if available -->
+    {app.icon_url && <img src={app.icon_url} alt={app.name} />}
+    <div>
+      <h1 class="app-title">{app.name}</h1>
+      <div class="app-meta">
+        Version: {app.version} | Author: {app.author} | Category: {app.category}
+      </div>
+    </div>
+  </div>
+
+  <div class="app-stats">
+    <div>Rating: {app.rating} ⭐</div>
+    <div>Reviews: {app.reviews}</div>
+    <div>Downloads: {app.downloads}</div>
+    <div>Last Updated: {new Date(app.last_updated).toLocaleDateString()}</div>
+  </div>
+
+  <div class="app-description">
+    {app.description}
+  </div>
+
+  {app.requirements && (
+    <div class="app-requirements">
+      Requirements: {app.requirements.join(', ')}
+    </div>
+  )}
+
+  {app.package_name && (
+    <div class="app-requirements">
+      Package: {app.package_name}
+    </div>
+  )}
+</div>
