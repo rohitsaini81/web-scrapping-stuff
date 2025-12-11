@@ -1,20 +1,19 @@
 ---
-import { type CollectionEntry, getCollection, render } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
-
 export async function getStaticPaths() {
-	const posts = await getCollection('apps');
-	return posts.map((post) => ({
-		params: { slug: post.id },
-		props: post,
-	}));
-}
-type Props = CollectionEntry<'apps'>;
+  // Fetch list of available slugs from your API
+  const slug = Astro.params.slug;
+  const res = await fetch("http://localhost:4321/api/app/"+slug);
+  const apps = await res.json();
 
-const post = Astro.props;
-const { Content } = await render(post);
+  console.log(apps);
+  
+  return apps.map(app => ({
+    params: { slug: app.app_id.toString() },
+    props: { app }
+  }));
+}
+
+const { app } = Astro.props;
 ---
 
-<BlogPost {...post.data}>
-	<Content />
-</BlogPost>
+<h1>{app.name}</h1>
