@@ -118,13 +118,7 @@ const app = await res.json();
     
 
     try {
-      const res = await fetch(`/api/download`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ appId }),
-      });
+      const res = await fetch(`http://localhost:8000/api/app/download/${appId}`);
 
       if (!res.ok) {
         throw new Error("Download failed");
@@ -134,9 +128,7 @@ const app = await res.json();
       console.log("API response:", data);
 
       // Optional: redirect to file
-      if (data.downloadUrl) {
-        window.location.href = data.downloadUrl;
-      }
+     
     } catch (err) {
       console.error(err);
       alert("Something went wrong");

@@ -1,8 +1,13 @@
 import { fetchAppBySlug, fetchApps, fetchAppSSById } from "./NODEJS/db.js";
 import express from 'express'
-
+import cors from "cors";
 const app = express()
 
+app.use(cors({
+  origin: "http://localhost:4321"
+}));
+
+// app.use(cors())
 
 app.get("/api/apps",async(req, res)=>{
 const apps = await fetchApps("apps")
@@ -66,6 +71,13 @@ const id = req.params.id;
     
 })
 
+
+
+app.get("/api/app/download/:app_id", async(req, res)=>{
+  const app_id = req.params.app_id
+  console.log('downlloading...: ',app_id);
+  res.json({"msg":"downladiing","satus":"ok","app_id":app_id})
+})
 
 
 
