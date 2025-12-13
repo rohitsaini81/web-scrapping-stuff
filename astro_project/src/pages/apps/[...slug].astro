@@ -108,9 +108,14 @@ const app = await res.json();
 
 <script>
   const button = document.getElementById("download-btn");
+  const params = new URLSearchParams(window.location.search);
+
+  const appId = params.get("appId");
+
 
   button.addEventListener("click", async () => {
-    const appId = button.dataset.appId;
+    console.log(appId);
+    
 
     try {
       const res = await fetch(`/api/download`, {

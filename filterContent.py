@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from Logger import logger
-from create import create_connection
+from create import create_connection, read_apps, find_app
 
 
 
@@ -64,14 +64,14 @@ def filter_it_list(url, isJson=False):
 
             print(title)
 
-#----------------------------------------------------------------------------->
+            #----------------------------------------------------------------------------->
             blog_content = filter_it_preview(a_tag.get("href"))
-#----------------------------------------------------------------------------->
+            #----------------------------------------------------------------------------->
 
-#----------------------------------------------------------------------------->
+            #----------------------------------------------------------------------------->
 
-            # INSERTING INTO DATABASE
-#----------------------------------------------------------------------------->
+                        # INSERTING INTO DATABASE
+            #----------------------------------------------------------------------------->
 
 
             # create_db
@@ -85,17 +85,12 @@ def filter_it_list(url, isJson=False):
 
 
 
-
-
-
 def filter_it_preview(url):
     html_content = scrape(url)
     soup = BeautifulSoup(html_content, "html.parser")
     divs = soup.find_all("div", class_=["commonmark_content"])
     html_blocks = [str(div) for div in divs]
     return "\n".join(html_blocks)
-
-
 
 
 
@@ -174,7 +169,6 @@ def create_blog(title, thumbnail_url, short_description, tags):
 
 
 
-
 # uri = "https://www.ionos.com/digitalguide/" home page
 # uri = "https://www.ionos.com/digitalguide/websites/website-creation/the-best-website-builders/" preview page
 # uri till 10 = "https://www.ionos.com/digitalguide/items.json?tx_guides_loadarticleslist[action]=list&tx_guides_loadarticleslist[contentUid]=0&tx_guides_loadarticleslist[controller]=LoadArticles&tx_guides_loadarticleslist[currentPageUid]=1&tx_guides_loadarticleslist[firstResult]=10&tx_guides_loadarticleslist[hideArticles]=&tx_guides_loadarticleslist[hideTopArticles]=1&tx_guides_loadarticleslist[layout]=0&tx_guides_loadarticleslist[maxResults]=10&tx_guides_loadarticleslist[stickyArticles]=&cHash=c872d3d693c453430bd0b74f96da528c"
@@ -209,9 +203,16 @@ def create_blog(title, thumbnail_url, short_description, tags):
 
 #uri = 110 uri id is done
 
-filter_it_list(uri,True)
+# filter_it_list(uri,True)
 
 
 
 
 
+def download_app(app_id):
+    app = find_app(app_id)
+    print(app[10])
+    filter_it_preview(app[10])
+
+
+download_app(228)

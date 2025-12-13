@@ -271,3 +271,51 @@ def delete_video(video_id):
 #         keywords="Python, programming, tutorial"
 #     )
 #logger.info(read_videos())
+
+
+
+
+
+# Read (Fetch all data from the table)
+def read_apps():
+    connection = create_connection()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT * FROM apps;")
+                data = cursor.fetchall()
+                if data:
+                    return data
+                    for row in data:
+                        logger.info(
+                            f"ID: {row[0]}, Title: {row[1]}, Video URL: {row[3]}")
+                else:
+                    logger.info("No videos found.")
+        except Exception as error:
+            logger.info(f"Error: {error}")
+        finally:
+            connection.close()
+
+
+def find_app(app_id):
+    connection = create_connection()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+    "SELECT * FROM apps WHERE id = %s;",
+    (app_id,)
+)
+                data = cursor.fetchall()
+                if data:
+                    return data[0]
+                    for row in data:
+                        logger.info(
+                            f"ID: {row[0]}, Title: {row[1]}, Video URL: {row[3]}")
+                else:
+                    logger.info("No videos found.")
+        except Exception as error:
+            logger.info(f"Error: {error}")
+        finally:
+            connection.close()
+

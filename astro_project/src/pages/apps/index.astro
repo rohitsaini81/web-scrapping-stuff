@@ -207,7 +207,7 @@ const apps = await response.json();
 
         // Edit button
         if (e.target.matches(".edit-btn")) {
-          window.location.href = `/apps/${app.name}`;
+          window.location.href = `/apps/${app.name}?appId=${app.id}`;
           return;
         }
 
