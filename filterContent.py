@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from Logger import logger
-from create import create_connection, read_apps, find_app
+from create import create_connection, read_apps
 
 
 
@@ -209,10 +209,3 @@ def create_blog(title, thumbnail_url, short_description, tags):
 
 
 
-def download_app(app_id):
-    app = find_app(app_id)
-    print(app[10])
-    filter_it_preview(app[10])
-
-
-download_app(228)

@@ -233,7 +233,49 @@ VALUES (
 }
 
 
+export async function findApp(appId) {
+  const client = await pool.connect();
 
+  try {
+    const result = await client.query(
+      "SELECT * FROM apps WHERE id = $1;",
+      [appId]
+    );
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    // rows[0] === data[0] in Python
+    return result.rows[0];
+
+  } catch (err) {
+    console.error("Error finding app:", err);
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+
+export async function downloadApp(appId) {
+  const app = await findApp(appId);
+
+  if (!app) {
+    throw new Error("App not found");
+  }
+  // console.log(app);
+  
+  const appUrl = app.app_url
+
+  console.log(appUrl);
+
+  // TODO: extract and download app and then return as variable
+  
+  // await filterItPreview(appUrl);
+}
+
+downloadApp(228)
 
 const main = async () => {
 
