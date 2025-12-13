@@ -6,7 +6,6 @@ const slug = Astro.params.slug;
 const res = await fetch(`http://localhost:4321/api/app/${slug}.json`);
 const app = await res.json();
 // console.log(app);
-
 ---
 
 <style>
@@ -17,7 +16,7 @@ const app = await res.json();
     background-color: #1e1e1e;
     color: #f5f5f5;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     font-family: system-ui, sans-serif;
   }
 
@@ -75,6 +74,10 @@ const app = await res.json();
         Version: {app.version} | Author: {app.author} | Category: {app.category}
       </div>
     </div>
+
+    <div class="float">
+      <button id="download-btn" data-app-id={app.id}> Download app </button>
+    </div>
   </div>
 
   <div class="app-stats">
@@ -88,15 +91,50 @@ const app = await res.json();
     {app.description}
   </div>
 
-  {app.requirements && (
-    <div class="app-requirements">
-      Requirements: {app.requirements.join(', ')}
-    </div>
-  )}
+  {
+    app.requirements && (
+      <div class="app-requirements">
+        Requirements: {app.requirements.join(", ")}
+      </div>
+    )
+  }
 
-  {app.package_name && (
-    <div class="app-requirements">
-      Package: {app.package_name}
-    </div>
-  )}
+  {
+    app.package_name && (
+      <div class="app-requirements">Package: {app.package_name}</div>
+    )
+  }
 </div>
+
+<script>
+  const button = document.getElementById("download-btn");
+
+  button.addEventListener("click", async () => {
+    const appId = button.dataset.appId;
+
+    try {
+      const res = await fetch(`/api/download`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ appId }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Download failed");
+      }
+
+      const data = await res.json();
+      console.log("API response:", data);
+
+      // Optional: redirect to file
+      if (data.downloadUrl) {
+        window.location.href = data.downloadUrl;
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
+    }
+  });
+</script>
