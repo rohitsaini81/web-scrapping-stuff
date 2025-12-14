@@ -112,6 +112,14 @@ const app = await res.json();
 
   const appId = params.get("appId");
 
+function downloadFile(url, filename) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename || "";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
 
   button.addEventListener("click", async () => {
     console.log(appId);
@@ -127,7 +135,7 @@ const app = await res.json();
       const data = await res.json();
       console.log("API response:", data);
 
-      // Optional: redirect to file
+      downloadFile(data.app_url, data.filename)
      
     } catch (err) {
       console.error(err);
