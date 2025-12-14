@@ -4,7 +4,7 @@ import cors from "cors";
 import {basename} from 'path'
 import { URL } from "url";
 
-import { downloadApp } from "./uptodown.js";
+import { downloadApp, update_file_name } from "./uptodown.js";
 const app = express()
 
 app.use(cors({
@@ -82,6 +82,9 @@ app.get("/api/app/download/:app_id", async(req, res)=>{
   console.log('downlloading...: ',app_id);
   const app_download_url = await downloadApp(app_id)
   const filename = basename(new URL(app_download_url).pathname);
+  const update_res = await update_file_name(filename, app_id)
+  console.log(update_res);
+  
   res.json({"file_Name":filename,"satus":"ok","app_id":app_id, "app_url":app_download_url})
 })
 

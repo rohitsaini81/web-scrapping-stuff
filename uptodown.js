@@ -284,6 +284,35 @@ export async function findAppConent(appId) {
   }
 }
 
+export async function update_file_name(file_name, app_id) {
+  const client = await pool.connect();
+
+  try {
+    const query = `
+      UPDATE app
+      SET file_name = $1
+      WHERE app_id = $2
+      RETURNING *;
+    `;
+
+    const result = await client.query(query, [file_name, app_id]);
+
+    if (result.rowCount === 0) {
+      return null; // no row updated
+    }
+
+    return result.rows[0]; // updated row
+
+  } catch (err) {
+    console.error("Error updating file_name:", err);
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+
+
 
 export async function downloadApp(appId) {
   const app = await findApp(appId);
