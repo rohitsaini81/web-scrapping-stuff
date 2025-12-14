@@ -1,6 +1,10 @@
 import { fetchAppBySlug, fetchApps, fetchAppSSById } from "./NODEJS/db.js";
 import express from 'express'
 import cors from "cors";
+import {basename} from 'path'
+import { URL } from "url";
+
+import { downloadApp } from "./uptodown.js";
 const app = express()
 
 app.use(cors({
@@ -76,7 +80,9 @@ const id = req.params.id;
 app.get("/api/app/download/:app_id", async(req, res)=>{
   const app_id = req.params.app_id
   console.log('downlloading...: ',app_id);
-  res.json({"msg":"downladiing","satus":"ok","app_id":app_id})
+  const app_download_url = await downloadApp(app_id)
+  const filename = basename(new URL(app_download_url).pathname);
+  res.json({"file_Name":filename,"satus":"ok","app_id":app_id, "app_url":app_download_url})
 })
 
 
